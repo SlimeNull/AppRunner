@@ -1,0 +1,29 @@
+﻿<Application x:Class="AppRunner.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ws="https://schemas.elecho.dev/wpfsuite"
+             xmlns:local="clr-namespace:AppRunner">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/DefaultStyles.xaml"/>
+                <ResourceDictionary Source="/Styles/ButtonStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <FontFamily x:Key="FontAwesome">pack://application:,,,/Assets/Fonts/#Font Awesome 6 Free</FontFamily>
+            <FontFamily x:Key="FontAwesomeSolid">pack://application:,,,/Assets/Fonts/#Font Awesome 6 Free Solid</FontFamily>
+            <FontFamily x:Key="FontAwesomeBrands">pack://application:,,,/Assets/Fonts/#Font Awesome 6 Brands</FontFamily>
+            <FontFamily x:Key="FontDingDing">pack://application:,,,/Assets/Fonts/#钉钉进步体</FontFamily>
+
+            <Style TargetType="ws:Dialog">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <FrameworkElement/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
