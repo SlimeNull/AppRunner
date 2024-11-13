@@ -153,4 +153,7 @@
   <data name="Common.Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="Message.FailedToRunApplication" xml:space="preserve">
+    <value>Failed to run application</value>
+  </data>
 </root>

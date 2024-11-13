@@ -1,7 +1,41 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ws="https://schemas.elecho.dev/wpfsuite">
+    <Style TargetType="ws:Button">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="#e0e0e0"/>
+        <Setter Property="HoverBackground" Value="#11000000"/>
+        <Setter Property="HoverBorderBrush" Value="#11000000"/>
+        <Setter Property="PressedBackground" Value="#22000000"/>
+        <Setter Property="PressedBorderBrush" Value="#22000000"/>
+        <Setter Property="Padding" Value="14 6"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+
+    <Style TargetType="ws:ComboBox">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="HoverBackground" Value="{x:Null}"/>
+        <Setter Property="PressedBackground" Value="#F8F8F8"/>
+        <Setter Property="BorderBrush" Value="#c4c4c4"/>
+        <Setter Property="HoverBorderBrush" Value="#b2b2b2"/>
+        <Setter Property="PressedBorderBrush" Value="{x:Null}"/>
+        <Setter Property="PopupCornerRadius" Value="4"/>
+        <Setter Property="PopupBorderBrush" Value="#c4c4c4"/>
+        <Setter Property="Padding" Value="8 6"/>
+    </Style>
+
+    <Style TargetType="ws:TextBox">
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="6"/>
+    </Style>
+
+    <Style TargetType="ws:CheckBox">
+        <Setter Property="CornerRadius" Value="3"/>
+    </Style>
+
     <Style TargetType="ws:ScrollViewer">
         
     </Style>
+    
 </ResourceDictionary>

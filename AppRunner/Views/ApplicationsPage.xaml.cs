@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AppRunner.Models;
 using AppRunner.ViewModels;
 using CommunityToolkit.Mvvm.Input;
 
@@ -37,6 +38,7 @@ namespace AppRunner.Views
         public void AddNewApplication()
         {
             ViewModel.IsAddApplicationDialogOpen = true;
+            ViewModel.CreatingApplication = new RunApp();
         }
 
         [RelayCommand]
@@ -50,6 +52,11 @@ namespace AppRunner.Views
         public void ConfirmAddApplicationDialog()
         {
             ViewModel.IsAddApplicationDialogOpen = false;
+
+            if (ViewModel.CreatingApplication is not null)
+            {
+                ViewModel.Applications.Add(ViewModel.CreatingApplication);
+            }
         }
     }
 }

@@ -14,8 +14,10 @@ namespace AppRunner.ViewModels
         [ObservableProperty]
         private bool _isAddApplicationDialogOpen;
 
-        public ObservableCollection<RunApp> Applications { get; } = new();
+        [ObservableProperty]
+        private RunApp? _creatingApplication;
 
+        public ObservableCollection<RunApp> Applications { get; } = new();
 
 
 

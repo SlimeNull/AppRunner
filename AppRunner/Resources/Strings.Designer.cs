@@ -115,6 +115,15 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to run application.
+        /// </summary>
+        internal static string Message_FailedToRunApplication {
+            get {
+                return ResourceManager.GetString("Message.FailedToRunApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
         internal static string PageName_About {

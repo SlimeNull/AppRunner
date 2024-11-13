@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:ws="https://schemas.elecho.dev/wpfsuite"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"    
       xmlns:local="clr-namespace:AppRunner.Views"
       xmlns:mk="clr-namespace:AppRunner.MarkupExtensions"
       mc:Ignorable="d"
@@ -16,16 +17,47 @@
         <ws:NumberCompareConverter x:Key="NumberNotZeroConverter"
                                    Comparison="NotEqual"
                                    TargetValue="0"/>
+        <ws:ValueConverterGroup x:Key="DivideBy180Converter">
+            <ws:DivideNumberConverter By="180"/>
+            <ws:NumberConverter TargetType="{x:Type sys:Int32}" />
+        </ws:ValueConverterGroup>
     </Page.Resources>
 
     <Grid>
         <ws:ScrollViewer>
             <Grid Margin="14 14 14 0">
-                <ws:ConditionalControl>
+                <ws:ConditionalControl Condition="{Binding ViewModel.Applications.Count,Converter={StaticResource NumberNotZeroConverter}}">
                     <ws:ConditionalControl.ContentWhenTrue>
-                        <ItemsControl ItemsSource="{Binding ViewModel.Applications}">
-
-                        </ItemsControl>
+                        <StackPanel>
+                            <ItemsControl ItemsSource="{Binding ViewModel.Applications}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ws:UniformGrid Columns="{Binding RelativeSource={RelativeSource Mode=Self},Path=ActualWidth,Converter={StaticResource DivideBy180Converter}}" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ws:Button FontFamily="{StaticResource FontDingDing}"
+                                                   HorizontalContentAlignment="Stretch"
+                                                   VerticalContentAlignment="Stretch"
+                                                   Command="{Binding StartCommand}"
+                                                   CornerRadius="8"
+                                                   Height="65"
+                                                   Padding="8">
+                                            <StackPanel HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding Name}"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           FontSize="14"/>
+                                                <TextBlock Text="{Binding Description}"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#cc000000"
+                                                           Margin="0 4 0 0"/>
+                                            </StackPanel>
+                                        </ws:Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
                     </ws:ConditionalControl.ContentWhenTrue>
                     <ws:ConditionalControl.ContentWhenFalse>
                         <TextBlock Text="{mk:LocalString Tips.ThereIsNothingHere}"
@@ -43,28 +75,75 @@
                     MinWidth="320"
                     CornerRadius="8"
                     Padding="14">
-                <ws:StackPanel Spacing="4">
-                    <TextBlock Text="{mk:LocalString Title.AddNewApplication}"
-                               FontSize="18"/>
-
-                    <StackPanel>
-                        <TextBlock Text="Application Type:"/>
-                        <ws:ComboBox/>
-                    </StackPanel>
-
+                <DockPanel>
                     <ws:StackPanel Spacing="4"
                                    HorizontalAlignment="Right"
-                                   Orientation="Horizontal">
+                                   Orientation="Horizontal"
+                                   DockPanel.Dock="Bottom"
+                                   Margin="0 8 0 0">
 
-                        <ws:Button Style="{StaticResource ButtonStyles.Normal}" 
-                                   Command="{Binding CancelAddApplicationDialogCommand}"
+                        <ws:Button Command="{Binding CancelAddApplicationDialogCommand}"
                                    Content="{mk:LocalString Common.Cancel}"/>
 
-                        <ws:Button Style="{StaticResource ButtonStyles.Normal}" 
-                                   Command="{Binding ConfirmAddApplicationDialogCommand}"
+                        <ws:Button Command="{Binding ConfirmAddApplicationDialogCommand}"
                                    Content="{mk:LocalString Common.OK}"/>
                     </ws:StackPanel>
-                </ws:StackPanel>
+
+                    <ws:ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="{mk:LocalString Title.AddNewApplication}"
+                               FontSize="18"
+                               Margin="0 0 0 16"/>
+
+                            <ws:StackPanel Spacing="12">
+                                <ws:StackPanel Spacing="4">
+                                    <TextBlock Text="Name:"/>
+                                    <ws:TextBox Placeholder="Display name"
+                                    PlaceholderBrush="#55000000"
+                                    Text="{Binding ViewModel.CreatingApplication.Name}"/>
+                                </ws:StackPanel>
+
+                                <ws:StackPanel Spacing="4">
+                                    <TextBlock Text="File Name:"/>
+                                    <ws:TextBox Placeholder="File name or path"
+                                    PlaceholderBrush="#55000000"
+                                    Text="{Binding ViewModel.CreatingApplication.FileName}"/>
+                                </ws:StackPanel>
+
+                                <ws:StackPanel Spacing="4">
+                                    <TextBlock Text="Description:"/>
+                                    <ws:TextBox Placeholder="Description"
+                                    PlaceholderBrush="#55000000"
+                                    Text="{Binding ViewModel.CreatingApplication.Description}"/>
+                                </ws:StackPanel>
+
+                                <ws:StackPanel Spacing="4">
+                                    <TextBlock Text="Arguments:"/>
+                                    <ws:TextBox Placeholder="Command line arguments"
+                                    PlaceholderBrush="#55000000"
+                                    Text="{Binding ViewModel.CreatingApplication.CommandLineArguments}"/>
+                                </ws:StackPanel>
+
+                                <ws:StackPanel Spacing="4">
+                                    <TextBlock Text="Working Directory:"/>
+                                    <ws:TextBox Placeholder="Working directory override"
+                                    PlaceholderBrush="#55000000"
+                                    Text="{Binding ViewModel.CreatingApplication.WorkingDirectory}"/>
+                                </ws:StackPanel>
+                            </ws:StackPanel>
+
+                            <ws:StackPanel Spacing="4"
+                                   Margin="0 12 0 0">
+                                <ws:CheckBox Content="Run as Administrator"
+                                 IsChecked="{Binding ViewModel.CreatingApplication.RunAsAdministrator}"/>
+                                <ws:CheckBox Content="Use shell execute"
+                                 IsChecked="{Binding ViewModel.CreatingApplication.UseShellExecute}"/>
+                                <ws:CheckBox Content="Create no window"
+                                 IsChecked="{Binding ViewModel.CreatingApplication.CreateNoWindow}"/>
+                            </ws:StackPanel>
+                        </StackPanel>
+                    </ws:ScrollViewer>
+                </DockPanel>
             </Border>
         </ws:Dialog>
     </Grid>

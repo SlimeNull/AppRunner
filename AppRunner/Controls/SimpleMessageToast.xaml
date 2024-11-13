@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="AppRunner.Controls.SimpleMessageToast"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ws="https://schemas.elecho.dev/wpfsuite"
+             xmlns:local="clr-namespace:AppRunner.Controls"
+             xmlns:mk="clr-namespace:AppRunner.MarkupExtensions"
+             mc:Ignorable="d" 
+             x:Name="root">
+    <Border CornerRadius="14"
+            Background="White"
+            Padding="18"
+            MinWidth="360">
+        <ws:StackPanel Spacing="8">
+            <TextBlock Text="{Binding ElementName=root,Path=Title}"
+                       d:Text="Title"
+                       FontSize="22"/>
+            <ContentPresenter Content="{Binding ElementName=root,Path=Content}"
+                              ContentTemplate="{Binding ElementName=root,Path=ContentTemplate}"
+                              ContentTemplateSelector="{Binding ElementName=root,Path=ContentTemplateSelector}"/>
+
+            <ws:StackPanel Orientation="Horizontal"
+                           Spacing="4">
+                <ws:Button Content="{mk:LocalString Common.OK}"
+                           Click="OKButton_Click"/>
+            </ws:StackPanel>
+        </ws:StackPanel>
+    </Border>
+</UserControl>

@@ -157,6 +157,7 @@
                                HoverBackground="#11000000"
                                PressedBackground="#22000000"
                                ws:WindowOption.IsMinimumButton="True"
+                               Padding="0"
                                Content="&#x25CF;"
                                Command="{Binding MinimizeSelfCommand}"/>
                     <ws:Button BorderThickness="0" Width="36"
@@ -165,6 +166,7 @@
                                Foreground="#ffb901"
                                HoverBackground="#11000000"
                                PressedBackground="#22000000"
+                               Padding="0"
                                ws:WindowOption.IsMaximumButton="True"
                                Content="&#x25CF;"
                                Command="{Binding MaximizeSelfCommand}"/>
@@ -175,6 +177,7 @@
                                HoverBackground="#11000000"
                                PressedBackground="#22000000"
                                ws:WindowOption.IsCloseButton="True"
+                               Padding="0"
                                Content="&#x25CF;"
                                Command="{Binding CloseSelfCommand}"/>
                 </StackPanel>

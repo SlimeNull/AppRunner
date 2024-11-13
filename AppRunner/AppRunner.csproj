@@ -13,10 +13,10 @@
     <PackageReference Include="EleCho.WpfSuite" Version="0.9.5" />
     <PackageReference Include="EleCho.WpfSuite.FluentDesign" Version="0.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="RustSharp" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controls\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
