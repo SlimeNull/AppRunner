@@ -8,7 +8,7 @@
         xmlns:mk="clr-namespace:AppRunner.MarkupExtensions"
         xmlns:local="clr-namespace:AppRunner"
         mc:Ignorable="d"
-        Title="MainWindow" 
+        Title="MainWindow"
         MinHeight="550" MinWidth="800"
         Height="550" Width="800"
         ws:WindowOption.IsCaptionMenuVisible="False"
@@ -93,10 +93,19 @@
                         BorderBrush="#e7e7e7"
                         Padding="18 4 18 12">
                     <Grid Height="32">
-                        <TextBlock Text="{Binding CurrentNavigationItem.Title}"
-                                   d:Text="Title"
-                                   FontSize="18"
-                                   HorizontalAlignment="Left"/>
+                        <ws:ContentControl Content="{Binding CurrentNavigationItem.Title}"
+                                        HorizontalAlignment="Left">
+                            <ws:ContentControl.ContentTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}"
+                                               d:Text="Title"
+                                               FontSize="18"/>
+                                </DataTemplate>
+                            </ws:ContentControl.ContentTemplate>
+                            <ws:ContentControl.Transition>
+                                <ws:FadeTransition Duration="0:0:0.300"/>
+                            </ws:ContentControl.Transition>
+                        </ws:ContentControl>
                         <ItemsControl ItemsSource="{Binding CurrentNavigationItem.PageCommands}"
                                       HorizontalAlignment="Right">
                             <ItemsControl.ItemsPanel>
@@ -119,7 +128,7 @@
             <Grid x:Name="AppMainContent"
                   Grid.Row="2"
                   Grid.Column="1">
-                <ws:Frame x:Name="AppFrame" 
+                <ws:Frame x:Name="AppFrame"
                           Background="#f0f0f0"
                           Content="{Binding CurrentNavigationItem.TargetPage}"
                           NavigationUIVisibility="Hidden"

@@ -157,4 +157,43 @@
   <data name="Title.EditEnvironment" xml:space="preserve">
     <value>编辑环境</value>
   </data>
+  <data name="Label.Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="Label.Description" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="Label.WorkingDirectory" xml:space="preserve">
+    <value>工作目录</value>
+  </data>
+  <data name="Label.Environment" xml:space="preserve">
+    <value>环境</value>
+  </data>
+  <data name="Label.EnvironmentVariables" xml:space="preserve">
+    <value>环境变量</value>
+  </data>
+  <data name="Label.DisplayName" xml:space="preserve">
+    <value>显示名称</value>
+  </data>
+  <data name="Label.Arguments" xml:space="preserve">
+    <value>参数</value>
+  </data>
+  <data name="Label.CommandLineArguments" xml:space="preserve">
+    <value>命令行参数</value>
+  </data>
+  <data name="Label.FileName" xml:space="preserve">
+    <value>文件名</value>
+  </data>
+  <data name="Label.FileNameOrPath" xml:space="preserve">
+    <value>文件名或路径</value>
+  </data>
+  <data name="Label.RunAsAdministrator" xml:space="preserve">
+    <value>以管理员权限运行</value>
+  </data>
+  <data name="Label.CreateNoWindow" xml:space="preserve">
+    <value>不要创建窗口</value>
+  </data>
+  <data name="Label.UseShellExecute" xml:space="preserve">
+    <value>使用 ShellExecute</value>
+  </data>
 </root>

@@ -119,22 +119,31 @@
 
                             <ws:StackPanel Spacing="12">
                                 <ws:StackPanel Spacing="4">
-                                    <TextBlock Text="Name:"/>
-                                    <ws:TextBox Placeholder="Display name"
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.Name}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <ws:TextBox Placeholder="{mk:LocalString Label.DisplayName}"
                                                 PlaceholderBrush="#55000000"
                                                 Text="{Binding ViewModel.EditingEnvironment.Name}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">
-                                    <TextBlock Text="Description:"/>
-                                    <ws:TextBox Placeholder="Description"
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.Description}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <ws:TextBox Placeholder="{mk:LocalString Label.Description}"
                                                 PlaceholderBrush="#55000000"
                                                 Text="{Binding ViewModel.EditingEnvironment.Description}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">
-                                    <TextBlock Text="Working Directory:"/>
-                                    <ws:TextBox Placeholder="Working directory override"
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.WorkingDirectory}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <ws:TextBox Placeholder="{mk:LocalString Label.WorkingDirectory}"
                                                 PlaceholderBrush="#55000000"
                                                 Text="{Binding ViewModel.EditingEnvironment.WorkingDirectory}"/>
                                 </ws:StackPanel>

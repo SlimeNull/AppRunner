@@ -180,4 +180,43 @@
   <data name="Common.Error" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="Label.Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Label.Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Label.WorkingDirectory" xml:space="preserve">
+    <value>Working directory</value>
+  </data>
+  <data name="Label.Environment" xml:space="preserve">
+    <value>Environment</value>
+  </data>
+  <data name="Label.EnvironmentVariables" xml:space="preserve">
+    <value>Environment variables</value>
+  </data>
+  <data name="Label.DisplayName" xml:space="preserve">
+    <value>Display name</value>
+  </data>
+  <data name="Label.Arguments" xml:space="preserve">
+    <value>Arguments</value>
+  </data>
+  <data name="Label.CommandLineArguments" xml:space="preserve">
+    <value>Command line arguments</value>
+  </data>
+  <data name="Label.FileName" xml:space="preserve">
+    <value>File name</value>
+  </data>
+  <data name="Label.FileNameOrPath" xml:space="preserve">
+    <value>File name or path</value>
+  </data>
+  <data name="Label.RunAsAdministrator" xml:space="preserve">
+    <value>Run as Administrator</value>
+  </data>
+  <data name="Label.CreateNoWindow" xml:space="preserve">
+    <value>Don't create window</value>
+  </data>
+  <data name="Label.UseShellExecute" xml:space="preserve">
+    <value>Use ShellExecute</value>
+  </data>
 </root>

@@ -15,9 +15,11 @@
         <StackPanel>
             <TextBlock Text="{Binding ElementName=root,Path=Title}"
                        d:Text="Title"
+                       TextWrapping="Wrap"
                        FontSize="22"/>
             <TextBlock Text="{Binding ElementName=root,Path=Message}"
-                       Margin="0 8 0 0"/>
+                       Margin="0 8 0 0"
+                       TextWrapping="Wrap"/>
 
             <ws:StackPanel Orientation="Horizontal"
                            HorizontalAlignment="Right"

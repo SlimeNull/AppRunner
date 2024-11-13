@@ -125,35 +125,50 @@
 
                             <ws:StackPanel Spacing="12">
                                 <ws:StackPanel Spacing="4">
-                                    <TextBlock Text="Name:"/>
-                                    <ws:TextBox Placeholder="Display name"
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.Name}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <ws:TextBox Placeholder="{mk:LocalString Label.DisplayName}"
                                                 PlaceholderBrush="#55000000"
                                                 Text="{Binding ViewModel.EditingApplication.Name}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">
-                                    <TextBlock Text="File Name:"/>
-                                    <ws:TextBox Placeholder="File name or path"
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.FileName}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <ws:TextBox Placeholder="{mk:LocalString Label.FileNameOrPath}"
                                                 PlaceholderBrush="#55000000"
                                                 Text="{Binding ViewModel.EditingApplication.FileName}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">
-                                    <TextBlock Text="Description:"/>
-                                    <ws:TextBox Placeholder="Description"
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.Description}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <ws:TextBox Placeholder="{mk:LocalString Label.Description}"
                                                 PlaceholderBrush="#55000000"
                                                 Text="{Binding ViewModel.EditingApplication.Description}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">
-                                    <TextBlock Text="Arguments:"/>
-                                    <ws:TextBox Placeholder="Command line arguments"
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.Arguments}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <ws:TextBox Placeholder="{mk:LocalString Label.CommandLineArguments}"
                                                 PlaceholderBrush="#55000000"
                                                 Text="{Binding ViewModel.EditingApplication.CommandLineArguments}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">
-                                    <TextBlock Text="Environment:"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.Environment}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
                                     <ws:ComboBox ItemsSource="{Binding ConfigurationService.Configuration.Environments}"
                                                  SelectedItem="{Binding ViewModel.EditingApplication.EnvironmentGuid,Converter={x:Static cvt:GuidToEnvironmentConverter.Instance},Mode=TwoWay}">
                                         <ws:ComboBox.ItemTemplate>
@@ -169,17 +184,26 @@
                                            Margin="0 12 0 0">
                                 <ws:CheckBox Content="Run as Administrator"
                                              IsChecked="{Binding ViewModel.EditingApplication.RunAsAdministrator}"/>
-                                <ws:CheckBox Content="Create no window"
-                                             IsChecked="{Binding ViewModel.EditingApplication.CreateNoWindow}"/>
-                                <ws:ConditionalControl Condition="{Binding ViewModel.EditingApplication.RunAsAdministrator}">
+                                <ws:ConditionalControl Condition="{Binding ViewModel.EditingApplication.MustUseShellExecute}">
                                     <ws:ConditionalControl.ContentWhenTrue>
-                                        <ws:CheckBox Content="Use shell execute"
+                                        <ws:CheckBox Content="{mk:LocalString Label.UseShellExecute}"
                                                      IsEnabled="False"
                                                      IsChecked="True"/>
                                     </ws:ConditionalControl.ContentWhenTrue>
                                     <ws:ConditionalControl.ContentWhenFalse>
-                                        <ws:CheckBox Content="Use shell execute"
+                                        <ws:CheckBox Content="{mk:LocalString Label.UseShellExecute}"
                                                      IsChecked="{Binding ViewModel.EditingApplication.UseShellExecute}"/>
+                                    </ws:ConditionalControl.ContentWhenFalse>
+                                </ws:ConditionalControl>
+                                <ws:ConditionalControl Condition="{Binding ViewModel.EditingApplication.IsUsingShellExecute}">
+                                    <ws:ConditionalControl.ContentWhenTrue>
+                                        <ws:CheckBox Content="{mk:LocalString Label.CreateNoWindow}"
+                                                     IsEnabled="False"
+                                                     IsChecked="False"/>
+                                    </ws:ConditionalControl.ContentWhenTrue>
+                                    <ws:ConditionalControl.ContentWhenFalse>
+                                        <ws:CheckBox Content="{mk:LocalString Label.CreateNoWindow}"
+                                                     IsChecked="{Binding ViewModel.EditingApplication.CreateNoWindow}"/>
                                     </ws:ConditionalControl.ContentWhenFalse>
                                 </ws:ConditionalControl>
                             </ws:StackPanel>

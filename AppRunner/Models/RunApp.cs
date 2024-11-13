@@ -33,13 +33,19 @@ namespace AppRunner.Models
         private Guid _environmentGuid;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(MustUseShellExecute))]
+        [NotifyPropertyChangedFor(nameof(IsUsingShellExecute))]
         private bool _runAsAdministrator;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsUsingShellExecute))]
         private bool _useShellExecute;
 
         [ObservableProperty]
         private bool _createNoWindow;
+
+        public bool MustUseShellExecute => RunAsAdministrator;
+        public bool IsUsingShellExecute => UseShellExecute || MustUseShellExecute;
 
         public RunApp Clone()
         {

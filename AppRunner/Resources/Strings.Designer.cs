@@ -124,6 +124,123 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Arguments.
+        /// </summary>
+        internal static string Label_Arguments {
+            get {
+                return ResourceManager.GetString("Label.Arguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command line arguments.
+        /// </summary>
+        internal static string Label_CommandLineArguments {
+            get {
+                return ResourceManager.GetString("Label.CommandLineArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t create window.
+        /// </summary>
+        internal static string Label_CreateNoWindow {
+            get {
+                return ResourceManager.GetString("Label.CreateNoWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        internal static string Label_Description {
+            get {
+                return ResourceManager.GetString("Label.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display name.
+        /// </summary>
+        internal static string Label_DisplayName {
+            get {
+                return ResourceManager.GetString("Label.DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Environment.
+        /// </summary>
+        internal static string Label_Environment {
+            get {
+                return ResourceManager.GetString("Label.Environment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Environment variables.
+        /// </summary>
+        internal static string Label_EnvironmentVariables {
+            get {
+                return ResourceManager.GetString("Label.EnvironmentVariables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File name.
+        /// </summary>
+        internal static string Label_FileName {
+            get {
+                return ResourceManager.GetString("Label.FileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File name or path.
+        /// </summary>
+        internal static string Label_FileNameOrPath {
+            get {
+                return ResourceManager.GetString("Label.FileNameOrPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string Label_Name {
+            get {
+                return ResourceManager.GetString("Label.Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run as Administrator.
+        /// </summary>
+        internal static string Label_RunAsAdministrator {
+            get {
+                return ResourceManager.GetString("Label.RunAsAdministrator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use ShellExecute.
+        /// </summary>
+        internal static string Label_UseShellExecute {
+            get {
+                return ResourceManager.GetString("Label.UseShellExecute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Working directory.
+        /// </summary>
+        internal static string Label_WorkingDirectory {
+            get {
+                return ResourceManager.GetString("Label.WorkingDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         internal static string Menu_Edit {
