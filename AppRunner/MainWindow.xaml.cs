@@ -32,11 +32,17 @@ namespace AppRunner
             {
                 PageCommands =
                 {
-                    new PageCommand("\uF067", Strings.Common_Add, App.Services.GetRequiredService<ApplicationsPage>().AddNewApplicationCommand)
+                    new PageCommand("\uF067", Strings.Common_Add, App.Services.GetRequiredService<ApplicationsPage>().ViewModel.AddNewApplicationCommand)
                 }
             },
 
-            new AppNavigationItem("\uF5FD", Strings.PageName_Environments, App.Services.GetRequiredService<EnvironmentsPage>()),
+            new AppNavigationItem("\uF5FD", Strings.PageName_Environments, App.Services.GetRequiredService<EnvironmentsPage>())
+            {
+                PageCommands =
+                {
+                    new PageCommand("\uF067", Strings.Common_Add, App.Services.GetRequiredService<EnvironmentsPage>().ViewModel.AddNewEnvironmentCommand)
+                }
+            },
 
             new AppNavigationItem("\u2699", Strings.PageName_Settings, App.Services.GetRequiredService<SettingsPage>()),
 

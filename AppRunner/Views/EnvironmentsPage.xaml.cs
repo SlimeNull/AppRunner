@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AppRunner.ViewModels;
 
 namespace AppRunner.Views
 {
@@ -20,9 +21,14 @@ namespace AppRunner.Views
     /// </summary>
     public partial class EnvironmentsPage : Page
     {
-        public EnvironmentsPage()
+        public EnvironmentsPage(
+            EnvironmentsPageModel viewModel)
         {
+            ViewModel = viewModel;
+            DataContext = this;
             InitializeComponent();
         }
+
+        public EnvironmentsPageModel ViewModel { get; }
     }
 }

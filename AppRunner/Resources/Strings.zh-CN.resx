@@ -133,4 +133,22 @@
   <data name="Message.FailedToRunApplication" xml:space="preserve">
     <value>运行程序失败</value>
   </data>
+  <data name="Menu.Run" xml:space="preserve">
+    <value>运行</value>
+  </data>
+  <data name="Menu.Edit" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="Menu.RunWithEnvironment" xml:space="preserve">
+    <value>打开环境</value>
+  </data>
+  <data name="Menu.RunAsAdministrator" xml:space="preserve">
+    <value>以管理员权限运行</value>
+  </data>
+  <data name="Title.EditApplication" xml:space="preserve">
+    <value>编辑程序</value>
+  </data>
+  <data name="Title.AddNewEnvironment" xml:space="preserve">
+    <value>添加新环境</value>
+  </data>
 </root>

@@ -15,6 +15,8 @@ namespace AppRunner.Models
 {
     public partial class RunApp : ObservableObject
     {
+        public Guid Guid { get; } = Guid.NewGuid();
+
         [ObservableProperty]
         private string _name = string.Empty;
 
@@ -25,10 +27,10 @@ namespace AppRunner.Models
         private string _description = string.Empty;
 
         [ObservableProperty]
-        private string _workingDirectory = string.Empty;
+        private string _commandLineArguments = string.Empty;
 
         [ObservableProperty]
-        private string _commandLineArguments = string.Empty;
+        private Guid _environmentGuid;
 
         [ObservableProperty]
         private bool _runAsAdministrator;
@@ -39,6 +41,30 @@ namespace AppRunner.Models
         [ObservableProperty]
         private bool _createNoWindow;
 
+        private void HandleStartException(Exception ex)
+        {
+            // TODO: show error message
+        }
+
+        public RunApp Clone()
+        {
+            var newApp = new RunApp();
+            Populate(newApp);
+
+            return newApp;
+        }
+
+        public void Populate(RunApp runApp)
+        {
+            runApp.Name = Name;
+            runApp.FileName = FileName;
+            runApp.Description = Description;
+            runApp.CommandLineArguments = CommandLineArguments;
+            runApp.RunAsAdministrator = RunAsAdministrator;
+            runApp.UseShellExecute = UseShellExecute;
+            runApp.CreateNoWindow = CreateNoWindow;
+        }
+
 
         [RelayCommand]
         public async Task Start()
@@ -46,7 +72,6 @@ namespace AppRunner.Models
             ProcessStartInfo startInfo = new ProcessStartInfo()
             {
                 FileName = FileName,
-                WorkingDirectory = WorkingDirectory,
                 Arguments = CommandLineArguments,
                 CreateNoWindow = CreateNoWindow,
             };
@@ -76,7 +101,42 @@ namespace AppRunner.Models
             }
             catch  (Exception ex)
             {
-                // TODO: show error message
+                HandleStartException(ex);
+            }
+        }
+
+        [RelayCommand]
+        public async Task StartAsAdministrator()
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = FileName,
+                Arguments = CommandLineArguments,
+                CreateNoWindow = CreateNoWindow,
+                Verb = "RunAs"
+            };
+
+            try
+            {
+                var process = Process.Start(startInfo);
+
+                if (process is not null)
+                {
+                    // wait for start
+
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            process.WaitForInputIdle();
+                        }
+                        catch { }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleStartException(ex);
             }
         }
     }

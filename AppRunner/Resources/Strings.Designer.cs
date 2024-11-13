@@ -115,6 +115,42 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        internal static string Menu_Edit {
+            get {
+                return ResourceManager.GetString("Menu.Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run.
+        /// </summary>
+        internal static string Menu_Run {
+            get {
+                return ResourceManager.GetString("Menu.Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run as Administrator.
+        /// </summary>
+        internal static string Menu_RunAsAdministrator {
+            get {
+                return ResourceManager.GetString("Menu.RunAsAdministrator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run with.
+        /// </summary>
+        internal static string Menu_RunWithEnvironment {
+            get {
+                return ResourceManager.GetString("Menu.RunWithEnvironment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to run application.
         /// </summary>
         internal static string Message_FailedToRunApplication {
@@ -174,6 +210,33 @@ namespace AppRunner.Resources {
         internal static string Title_AddNewApplication {
             get {
                 return ResourceManager.GetString("Title.AddNewApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add New Environment.
+        /// </summary>
+        internal static string Title_AddNewEnvironment {
+            get {
+                return ResourceManager.GetString("Title.AddNewEnvironment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Application.
+        /// </summary>
+        internal static string Title_EditApplication {
+            get {
+                return ResourceManager.GetString("Title.EditApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Environment.
+        /// </summary>
+        internal static string Title_EditEnvironment {
+            get {
+                return ResourceManager.GetString("Title.EditEnvironment", resourceCulture);
             }
         }
     }

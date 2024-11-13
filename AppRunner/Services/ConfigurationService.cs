@@ -25,11 +25,14 @@ namespace AppRunner.Services
 
         private AppConfiguration LoadConfiguration()
         {
-            var configurationText = File.ReadAllText(ConfigurationPath);
-
+            if (!File.Exists(ConfigurationPath))
+            {
+                return new AppConfiguration();
+            }
 
             try
             {
+                var configurationText = File.ReadAllText(ConfigurationPath);
                 var configuration = JsonSerializer.Deserialize<AppConfiguration>(configurationText);
 
                 if (configuration is null)

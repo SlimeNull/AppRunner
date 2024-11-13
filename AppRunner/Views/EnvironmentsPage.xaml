@@ -3,12 +3,145 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:ws="https://schemas.elecho.dev/wpfsuite"
       xmlns:local="clr-namespace:AppRunner.Views"
+      xmlns:mk="clr-namespace:AppRunner.MarkupExtensions"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="EnvironmentsPage">
+      Title="EnvironmentsPage"
+      d:DataContext="{d:DesignInstance Type=local:EnvironmentsPage}">
+
+    <Page.Resources>
+        <ws:BindingProxy x:Key="ViewModelProxy"
+                         Data="{Binding ViewModel}"/>
+        <ws:NumberCompareConverter x:Key="NumberNotZeroConverter"
+                                   Comparison="NotEqual"
+                                   TargetValue="0"/>
+        <ws:ValueConverterGroup x:Key="DivideBy180Converter">
+            <ws:DivideNumberConverter By="180"/>
+            <ws:NumberConverter TargetType="{x:Type sys:Int32}" />
+        </ws:ValueConverterGroup>
+    </Page.Resources>
 
     <Grid>
-        
+        <ws:ScrollViewer>
+            <Grid Margin="14 14 14 0">
+                <ws:ConditionalControl Condition="{Binding ViewModel.Environments.Count,Converter={StaticResource NumberNotZeroConverter}}">
+                    <ws:ConditionalControl.ContentWhenTrue>
+                        <StackPanel>
+                            <ItemsControl ItemsSource="{Binding ViewModel.Environments}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ws:UniformGrid Columns="{Binding RelativeSource={RelativeSource Mode=Self},Path=ActualWidth,Converter={StaticResource DivideBy180Converter}}" 
+                                                        VerticalSpacing="8"
+                                                        HorizontalSpacing="8"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ws:Button FontFamily="{StaticResource FontDingDing}"
+                                                   HoverBackground="#fafafa"
+                                                   PressedBackground="#f0f0f0"
+                                                   HorizontalContentAlignment="Stretch"
+                                                   VerticalContentAlignment="Stretch"
+                                                   Command="{Binding StartCommand}"
+                                                   CornerRadius="8"
+                                                   Height="65"
+                                                   Padding="8">
+                                            <StackPanel HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding Name}"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           FontSize="14"/>
+                                                <TextBlock Text="{Binding Description}"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#cc000000"
+                                                           Margin="0 4 0 0"/>
+                                            </StackPanel>
+                                            <ws:Button.Resources>
+                                                <ws:BindingProxy x:Key="DataProxy"
+                                                                 Data="{Binding}"/>
+                                            </ws:Button.Resources>
+                                            <ws:Button.ContextMenu>
+                                                <ws:ContextMenu>
+                                                    <MenuItem Header="{mk:LocalString Menu.Run}"
+                                                              Command="{Binding Source={StaticResource DataProxy},Path=Data.StartCommand}"/>
+                                                    <MenuItem Header="{mk:LocalString Menu.Edit}"
+                                                              Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.EditEnvironmentCommand}"
+                                                              CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
+                                                    <MenuItem Header="{mk:LocalString Menu.RunAsAdministrator}"
+                                                              Command="{Binding Source={StaticResource DataProxy},Path=Data.StartAsAdministratorCommand}"/>
+                                                    <MenuItem Header="{mk:LocalString Menu.RunWithEnvironment}"/>
+                                                </ws:ContextMenu>
+                                            </ws:Button.ContextMenu>
+                                        </ws:Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ws:ConditionalControl.ContentWhenTrue>
+                    <ws:ConditionalControl.ContentWhenFalse>
+                        <TextBlock Text="{mk:LocalString Tips.ThereIsNothingHere}"
+                                   Foreground="Gray"
+                                   Margin="8"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Top"/>
+                    </ws:ConditionalControl.ContentWhenFalse>
+                </ws:ConditionalControl>
+            </Grid>
+        </ws:ScrollViewer>
+
+        <ws:Dialog IsOpen="{Binding ViewModel.IsEditEnvironmentDialogOpen,Mode=TwoWay}">
+            <Border Background="#ffffff"
+                    MinWidth="320"
+                    CornerRadius="8"
+                    Padding="14">
+                <DockPanel>
+                    <ws:StackPanel Spacing="4"
+                                   HorizontalAlignment="Right"
+                                   Orientation="Horizontal"
+                                   DockPanel.Dock="Bottom"
+                                   Margin="0 8 0 0">
+
+                        <ws:Button Command="{Binding ViewModel.CancelEditEnvironmentDialogCommand}"
+                                   Content="{mk:LocalString Common.Cancel}"/>
+
+                        <ws:Button Command="{Binding ViewModel.ConfirmEditEnvironmentDialogCommand}"
+                                   Content="{mk:LocalString Common.OK}"/>
+                    </ws:StackPanel>
+
+                    <ws:ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="{Binding ViewModel.EditEnvironmentDialogTitle}"
+                                       FontSize="18"
+                                       Margin="0 0 0 16"/>
+
+                            <ws:StackPanel Spacing="12">
+                                <ws:StackPanel Spacing="4">
+                                    <TextBlock Text="Name:"/>
+                                    <ws:TextBox Placeholder="Display name"
+                                                PlaceholderBrush="#55000000"
+                                                Text="{Binding ViewModel.EditingEnvironment.Name}"/>
+                                </ws:StackPanel>
+
+                                <ws:StackPanel Spacing="4">
+                                    <TextBlock Text="Description:"/>
+                                    <ws:TextBox Placeholder="Description"
+                                                PlaceholderBrush="#55000000"
+                                                Text="{Binding ViewModel.EditingEnvironment.Description}"/>
+                                </ws:StackPanel>
+
+                                <ws:StackPanel Spacing="4">
+                                    <TextBlock Text="Working Directory:"/>
+                                    <ws:TextBox Placeholder="Working directory override"
+                                                PlaceholderBrush="#55000000"
+                                                Text="{Binding ViewModel.EditingEnvironment.WorkingDirectory}"/>
+                                </ws:StackPanel>
+                            </ws:StackPanel>
+                        </StackPanel>
+                    </ws:ScrollViewer>
+                </DockPanel>
+            </Border>
+        </ws:Dialog>
     </Grid>
 </Page>

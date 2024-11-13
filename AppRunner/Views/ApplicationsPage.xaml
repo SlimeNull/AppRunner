@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:ws="https://schemas.elecho.dev/wpfsuite"
-      xmlns:sys="clr-namespace:System;assembly=mscorlib"    
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:local="clr-namespace:AppRunner.Views"
       xmlns:mk="clr-namespace:AppRunner.MarkupExtensions"
       mc:Ignorable="d"
@@ -14,6 +14,8 @@
       d:DataContext="{d:DesignInstance Type=local:ApplicationsPage}">
 
     <Page.Resources>
+        <ws:BindingProxy x:Key="ViewModelProxy"
+                         Data="{Binding ViewModel}"/>
         <ws:NumberCompareConverter x:Key="NumberNotZeroConverter"
                                    Comparison="NotEqual"
                                    TargetValue="0"/>
@@ -32,12 +34,16 @@
                             <ItemsControl ItemsSource="{Binding ViewModel.Applications}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <ws:UniformGrid Columns="{Binding RelativeSource={RelativeSource Mode=Self},Path=ActualWidth,Converter={StaticResource DivideBy180Converter}}" />
+                                        <ws:UniformGrid Columns="{Binding RelativeSource={RelativeSource Mode=Self},Path=ActualWidth,Converter={StaticResource DivideBy180Converter}}" 
+                                                        VerticalSpacing="8"
+                                                        HorizontalSpacing="8"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <ws:Button FontFamily="{StaticResource FontDingDing}"
+                                                   HoverBackground="#fafafa"
+                                                   PressedBackground="#f0f0f0"
                                                    HorizontalContentAlignment="Stretch"
                                                    VerticalContentAlignment="Stretch"
                                                    Command="{Binding StartCommand}"
@@ -53,6 +59,22 @@
                                                            Foreground="#cc000000"
                                                            Margin="0 4 0 0"/>
                                             </StackPanel>
+                                            <ws:Button.Resources>
+                                                <ws:BindingProxy x:Key="DataProxy"
+                                                                 Data="{Binding}"/>
+                                            </ws:Button.Resources>
+                                            <ws:Button.ContextMenu>
+                                                <ws:ContextMenu>
+                                                    <MenuItem Header="{mk:LocalString Menu.Run}"
+                                                              Command="{Binding Source={StaticResource DataProxy},Path=Data.StartCommand}"/>
+                                                    <MenuItem Header="{mk:LocalString Menu.Edit}"
+                                                              Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.EditApplicationCommand}"
+                                                              CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
+                                                    <MenuItem Header="{mk:LocalString Menu.RunAsAdministrator}"
+                                                              Command="{Binding Source={StaticResource DataProxy},Path=Data.StartAsAdministratorCommand}"/>
+                                                    <MenuItem Header="{mk:LocalString Menu.RunWithEnvironment}"/>
+                                                </ws:ContextMenu>
+                                            </ws:Button.ContextMenu>
                                         </ws:Button>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -70,7 +92,7 @@
             </Grid>
         </ws:ScrollViewer>
 
-        <ws:Dialog IsOpen="{Binding ViewModel.IsAddApplicationDialogOpen,Mode=TwoWay}">
+        <ws:Dialog IsOpen="{Binding ViewModel.IsEditApplicationDialogOpen,Mode=TwoWay}">
             <Border Background="#ffffff"
                     MinWidth="320"
                     CornerRadius="8"
@@ -82,64 +104,68 @@
                                    DockPanel.Dock="Bottom"
                                    Margin="0 8 0 0">
 
-                        <ws:Button Command="{Binding CancelAddApplicationDialogCommand}"
+                        <ws:Button Command="{Binding ViewModel.CancelEditApplicationDialogCommand}"
                                    Content="{mk:LocalString Common.Cancel}"/>
 
-                        <ws:Button Command="{Binding ConfirmAddApplicationDialogCommand}"
+                        <ws:Button Command="{Binding ViewModel.ConfirmEditApplicationDialogCommand}"
                                    Content="{mk:LocalString Common.OK}"/>
                     </ws:StackPanel>
 
                     <ws:ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel>
-                            <TextBlock Text="{mk:LocalString Title.AddNewApplication}"
-                               FontSize="18"
-                               Margin="0 0 0 16"/>
+                            <TextBlock Text="{Binding ViewModel.EditApplicationDialogTitle}"
+                                       FontSize="18"
+                                       Margin="0 0 0 16"/>
 
                             <ws:StackPanel Spacing="12">
                                 <ws:StackPanel Spacing="4">
                                     <TextBlock Text="Name:"/>
                                     <ws:TextBox Placeholder="Display name"
-                                    PlaceholderBrush="#55000000"
-                                    Text="{Binding ViewModel.CreatingApplication.Name}"/>
+                                                PlaceholderBrush="#55000000"
+                                                Text="{Binding ViewModel.EditingApplication.Name}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">
                                     <TextBlock Text="File Name:"/>
                                     <ws:TextBox Placeholder="File name or path"
-                                    PlaceholderBrush="#55000000"
-                                    Text="{Binding ViewModel.CreatingApplication.FileName}"/>
+                                                PlaceholderBrush="#55000000"
+                                                Text="{Binding ViewModel.EditingApplication.FileName}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">
                                     <TextBlock Text="Description:"/>
                                     <ws:TextBox Placeholder="Description"
-                                    PlaceholderBrush="#55000000"
-                                    Text="{Binding ViewModel.CreatingApplication.Description}"/>
+                                                PlaceholderBrush="#55000000"
+                                                Text="{Binding ViewModel.EditingApplication.Description}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">
                                     <TextBlock Text="Arguments:"/>
                                     <ws:TextBox Placeholder="Command line arguments"
-                                    PlaceholderBrush="#55000000"
-                                    Text="{Binding ViewModel.CreatingApplication.CommandLineArguments}"/>
+                                                PlaceholderBrush="#55000000"
+                                                Text="{Binding ViewModel.EditingApplication.CommandLineArguments}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">
-                                    <TextBlock Text="Working Directory:"/>
-                                    <ws:TextBox Placeholder="Working directory override"
-                                    PlaceholderBrush="#55000000"
-                                    Text="{Binding ViewModel.CreatingApplication.WorkingDirectory}"/>
+                                    <TextBlock Text="Environment:"/>
+                                    <ws:ComboBox ItemsSource="{Binding ConfigurationService.Configuration.Environments}">
+                                        <ws:ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}"/>
+                                            </DataTemplate>
+                                        </ws:ComboBox.ItemTemplate>
+                                    </ws:ComboBox>
                                 </ws:StackPanel>
                             </ws:StackPanel>
 
                             <ws:StackPanel Spacing="4"
-                                   Margin="0 12 0 0">
+                                           Margin="0 12 0 0">
                                 <ws:CheckBox Content="Run as Administrator"
-                                 IsChecked="{Binding ViewModel.CreatingApplication.RunAsAdministrator}"/>
+                                             IsChecked="{Binding ViewModel.EditingApplication.RunAsAdministrator}"/>
                                 <ws:CheckBox Content="Use shell execute"
-                                 IsChecked="{Binding ViewModel.CreatingApplication.UseShellExecute}"/>
+                                             IsChecked="{Binding ViewModel.EditingApplication.UseShellExecute}"/>
                                 <ws:CheckBox Content="Create no window"
-                                 IsChecked="{Binding ViewModel.CreatingApplication.CreateNoWindow}"/>
+                                             IsChecked="{Binding ViewModel.EditingApplication.CreateNoWindow}"/>
                             </ws:StackPanel>
                         </StackPanel>
                     </ws:ScrollViewer>

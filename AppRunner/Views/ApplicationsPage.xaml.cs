@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AppRunner.Models;
+using AppRunner.Services;
 using AppRunner.ViewModels;
 using CommunityToolkit.Mvvm.Input;
 
@@ -23,39 +24,25 @@ namespace AppRunner.Views
     /// </summary>
     public partial class ApplicationsPage : Page
     {
+        public ConfigurationService ConfigurationService { get; }
         public ApplicationsPageModel ViewModel { get; }
 
         public ApplicationsPage(
-            ApplicationsPageModel viewModel)
+            ApplicationsPageModel viewModel,
+            ConfigurationService configurationService)
         {
+            ConfigurationService = configurationService;
+
             ViewModel = viewModel;
             DataContext = this;
             InitializeComponent();
-        }
 
-
-        [RelayCommand]
-        public void AddNewApplication()
-        {
-            ViewModel.IsAddApplicationDialogOpen = true;
-            ViewModel.CreatingApplication = new RunApp();
-        }
-
-        [RelayCommand]
-        public void CancelAddApplicationDialog()
-        {
-            ViewModel.IsAddApplicationDialogOpen = false;
-        }
-
-
-        [RelayCommand]
-        public void ConfirmAddApplicationDialog()
-        {
-            ViewModel.IsAddApplicationDialogOpen = false;
-
-            if (ViewModel.CreatingApplication is not null)
+            if (ConfigurationService.Configuration.Applications is not null)
             {
-                ViewModel.Applications.Add(ViewModel.CreatingApplication);
+                foreach (var app in ConfigurationService.Configuration.Applications)
+                {
+                    ViewModel.Applications.Add(app);
+                }
             }
         }
     }

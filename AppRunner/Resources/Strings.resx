@@ -156,4 +156,25 @@
   <data name="Message.FailedToRunApplication" xml:space="preserve">
     <value>Failed to run application</value>
   </data>
+  <data name="Menu.Run" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="Menu.Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Menu.RunAsAdministrator" xml:space="preserve">
+    <value>Run as Administrator</value>
+  </data>
+  <data name="Menu.RunWithEnvironment" xml:space="preserve">
+    <value>Run with</value>
+  </data>
+  <data name="Title.EditApplication" xml:space="preserve">
+    <value>Edit Application</value>
+  </data>
+  <data name="Title.AddNewEnvironment" xml:space="preserve">
+    <value>Add New Environment</value>
+  </data>
+  <data name="Title.EditEnvironment" xml:space="preserve">
+    <value>Edit Environment</value>
+  </data>
 </root>

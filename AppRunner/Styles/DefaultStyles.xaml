@@ -32,6 +32,11 @@
 
     <Style TargetType="ws:CheckBox">
         <Setter Property="CornerRadius" Value="3"/>
+        <Setter Property="Background" Value="#ffffff"/>
+    </Style>
+
+    <Style TargetType="ws:ContextMenu">
+        <Setter Property="CornerRadius" Value="4"/>
     </Style>
 
     <Style TargetType="ws:ScrollViewer">

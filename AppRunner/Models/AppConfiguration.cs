@@ -9,6 +9,12 @@ namespace AppRunner.Models
 {
     public partial class AppConfiguration : ObservableObject
     {
+        [ObservableProperty]
+        private RunApp[]? _applications;
+
+        [ObservableProperty]
+        private RunEnvironment[]? _environments;
+
 
     }
 }
