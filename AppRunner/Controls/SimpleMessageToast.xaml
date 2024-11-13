@@ -12,19 +12,21 @@
             Background="White"
             Padding="18"
             MinWidth="360">
-        <ws:StackPanel Spacing="8">
+        <StackPanel>
             <TextBlock Text="{Binding ElementName=root,Path=Title}"
                        d:Text="Title"
                        FontSize="22"/>
-            <ContentPresenter Content="{Binding ElementName=root,Path=Content}"
-                              ContentTemplate="{Binding ElementName=root,Path=ContentTemplate}"
-                              ContentTemplateSelector="{Binding ElementName=root,Path=ContentTemplateSelector}"/>
+            <TextBlock Text="{Binding ElementName=root,Path=Message}"
+                       Margin="0 8 0 0"/>
 
             <ws:StackPanel Orientation="Horizontal"
-                           Spacing="4">
-                <ws:Button Content="{mk:LocalString Common.OK}"
+                           HorizontalAlignment="Right"
+                           Spacing="4"
+                           Margin="0 14 0 0">
+                <ws:Button Content="OK"
+                           MinWidth="60"
                            Click="OKButton_Click"/>
             </ws:StackPanel>
-        </ws:StackPanel>
+        </StackPanel>
     </Border>
 </UserControl>

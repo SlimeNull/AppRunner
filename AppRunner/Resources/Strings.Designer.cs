@@ -88,6 +88,15 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string Common_Error {
+            get {
+                return ResourceManager.GetString("Common.Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         internal static string Common_No {

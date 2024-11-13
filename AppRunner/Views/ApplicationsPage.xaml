@@ -34,7 +34,7 @@
                             <ItemsControl ItemsSource="{Binding ViewModel.Applications}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <ws:UniformGrid Columns="{Binding RelativeSource={RelativeSource Mode=Self},Path=ActualWidth,Converter={StaticResource DivideBy180Converter}}" 
+                                        <ws:UniformGrid Columns="{Binding RelativeSource={RelativeSource Mode=Self},Path=ActualWidth,Converter={StaticResource DivideBy180Converter}}"
                                                         VerticalSpacing="8"
                                                         HorizontalSpacing="8"/>
                                     </ItemsPanelTemplate>
@@ -162,10 +162,19 @@
                                            Margin="0 12 0 0">
                                 <ws:CheckBox Content="Run as Administrator"
                                              IsChecked="{Binding ViewModel.EditingApplication.RunAsAdministrator}"/>
-                                <ws:CheckBox Content="Use shell execute"
-                                             IsChecked="{Binding ViewModel.EditingApplication.UseShellExecute}"/>
                                 <ws:CheckBox Content="Create no window"
                                              IsChecked="{Binding ViewModel.EditingApplication.CreateNoWindow}"/>
+                                <ws:ConditionalControl Condition="{Binding ViewModel.EditingApplication.RunAsAdministrator}">
+                                    <ws:ConditionalControl.ContentWhenTrue>
+                                        <ws:CheckBox Content="Use shell execute"
+                                                     IsEnabled="False"
+                                                     IsChecked="True"/>
+                                    </ws:ConditionalControl.ContentWhenTrue>
+                                    <ws:ConditionalControl.ContentWhenFalse>
+                                        <ws:CheckBox Content="Use shell execute"
+                                                     IsChecked="{Binding ViewModel.EditingApplication.UseShellExecute}"/>
+                                    </ws:ConditionalControl.ContentWhenFalse>
+                                </ws:ConditionalControl>
                             </ws:StackPanel>
                         </StackPanel>
                     </ws:ScrollViewer>

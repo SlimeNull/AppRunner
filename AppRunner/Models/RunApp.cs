@@ -15,7 +15,7 @@ namespace AppRunner.Models
 {
     public partial class RunApp : ObservableObject
     {
-        public Guid Guid { get; } = Guid.NewGuid();
+        public Guid Guid { get; set; } = Guid.NewGuid();
 
         [ObservableProperty]
         private string _name = string.Empty;
@@ -43,7 +43,18 @@ namespace AppRunner.Models
 
         private void HandleStartException(Exception ex)
         {
-            // TODO: show error message
+            if (DialogLayer.GetDialogLayer(Application.Current.MainWindow) is DialogLayer dialogLayer)
+            {
+                dialogLayer.Push(new Dialog()
+                {
+                    Content = new SimpleMessageToast()
+                    {
+                        MaxWidth = 450,
+                        Title = Strings.Common_Error,
+                        Message = ex.Message,
+                    }
+                });
+            }
         }
 
         public RunApp Clone()
@@ -61,8 +72,8 @@ namespace AppRunner.Models
             runApp.Description = Description;
             runApp.CommandLineArguments = CommandLineArguments;
             runApp.RunAsAdministrator = RunAsAdministrator;
-            runApp.UseShellExecute = UseShellExecute;
             runApp.CreateNoWindow = CreateNoWindow;
+            runApp.UseShellExecute = UseShellExecute;
         }
 
 
@@ -74,11 +85,13 @@ namespace AppRunner.Models
                 FileName = FileName,
                 Arguments = CommandLineArguments,
                 CreateNoWindow = CreateNoWindow,
+                UseShellExecute = UseShellExecute,
             };
 
             if (RunAsAdministrator)
             {
-                startInfo.Verb = "RunAs";
+                startInfo.UseShellExecute = true;
+                startInfo.Verb = "runas";
             }
 
             try
@@ -99,7 +112,7 @@ namespace AppRunner.Models
                     });
                 }
             }
-            catch  (Exception ex)
+            catch (Exception ex)
             {
                 HandleStartException(ex);
             }
@@ -113,6 +126,7 @@ namespace AppRunner.Models
                 FileName = FileName,
                 Arguments = CommandLineArguments,
                 CreateNoWindow = CreateNoWindow,
+                UseShellExecute = true,
                 Verb = "RunAs"
             };
 

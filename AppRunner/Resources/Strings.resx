@@ -177,4 +177,7 @@
   <data name="Title.EditEnvironment" xml:space="preserve">
     <value>Edit Environment</value>
   </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
 </root>

@@ -6,7 +6,7 @@ namespace AppRunner.Models
 {
     public partial class RunEnvironment : ObservableObject
     {
-        public Guid Guid { get; } = Guid.NewGuid();
+        public Guid Guid { get; set; } = Guid.NewGuid();
 
         [ObservableProperty]
         private string _name = string.Empty;

@@ -151,4 +151,10 @@
   <data name="Title.AddNewEnvironment" xml:space="preserve">
     <value>添加新环境</value>
   </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="Title.EditEnvironment" xml:space="preserve">
+    <value>编辑环境</value>
+  </data>
 </root>

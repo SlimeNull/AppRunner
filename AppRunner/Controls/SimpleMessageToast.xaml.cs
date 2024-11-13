@@ -34,16 +34,23 @@ namespace AppRunner.Controls
             set { SetValue(TitleProperty, value); }
         }
 
+        public string Message
+        {
+            get { return (string)GetValue(MessageProperty); }
+            set { SetValue(MessageProperty, value); }
+        }
+
+
 
         public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register(nameof(Title), typeof(string), typeof(SimpleMessageToast), new PropertyMetadata(string.Empty));
 
+        public static readonly DependencyProperty MessageProperty =
+            DependencyProperty.Register(nameof(Message), typeof(string), typeof(SimpleMessageToast), new PropertyMetadata(string.Empty));
+
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Dialog.GetDialog(this) is Dialog dialog)
-            {
-                dialog.IsOpen = false;
-            }
+            DialogLayer.GetDialogLayer(this)?.Pop();
         }
     }
 }
