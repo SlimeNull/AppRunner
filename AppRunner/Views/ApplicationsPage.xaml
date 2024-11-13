@@ -7,6 +7,7 @@
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:local="clr-namespace:AppRunner.Views"
       xmlns:mk="clr-namespace:AppRunner.MarkupExtensions"
+      xmlns:cvt="clr-namespace:AppRunner.Converters"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       d:Background="White"
@@ -46,7 +47,8 @@
                                                    PressedBackground="#f0f0f0"
                                                    HorizontalContentAlignment="Stretch"
                                                    VerticalContentAlignment="Stretch"
-                                                   Command="{Binding StartCommand}"
+                                                   Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationCommand}"
+                                                   CommandParameter="{Binding}"
                                                    CornerRadius="8"
                                                    Height="65"
                                                    Padding="8">
@@ -66,12 +68,14 @@
                                             <ws:Button.ContextMenu>
                                                 <ws:ContextMenu>
                                                     <MenuItem Header="{mk:LocalString Menu.Run}"
-                                                              Command="{Binding Source={StaticResource DataProxy},Path=Data.StartCommand}"/>
+                                                              Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationCommand}"
+                                                              CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
                                                     <MenuItem Header="{mk:LocalString Menu.Edit}"
                                                               Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.EditApplicationCommand}"
                                                               CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
                                                     <MenuItem Header="{mk:LocalString Menu.RunAsAdministrator}"
-                                                              Command="{Binding Source={StaticResource DataProxy},Path=Data.StartAsAdministratorCommand}"/>
+                                                              Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationAsAdministratorCommand}"
+                                                              CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
                                                     <MenuItem Header="{mk:LocalString Menu.RunWithEnvironment}"/>
                                                 </ws:ContextMenu>
                                             </ws:Button.ContextMenu>
@@ -104,11 +108,13 @@
                                    DockPanel.Dock="Bottom"
                                    Margin="0 8 0 0">
 
-                        <ws:Button Command="{Binding ViewModel.CancelEditApplicationDialogCommand}"
-                                   Content="{mk:LocalString Common.Cancel}"/>
-
                         <ws:Button Command="{Binding ViewModel.ConfirmEditApplicationDialogCommand}"
-                                   Content="{mk:LocalString Common.OK}"/>
+                                   Content="{mk:LocalString Common.OK}"
+                                   MinWidth="60"/>
+
+                        <ws:Button Command="{Binding ViewModel.CancelEditApplicationDialogCommand}"
+                                   Content="{mk:LocalString Common.Cancel}"
+                                   MinWidth="60"/>
                     </ws:StackPanel>
 
                     <ws:ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -148,7 +154,8 @@
 
                                 <ws:StackPanel Spacing="4">
                                     <TextBlock Text="Environment:"/>
-                                    <ws:ComboBox ItemsSource="{Binding ConfigurationService.Configuration.Environments}">
+                                    <ws:ComboBox ItemsSource="{Binding ConfigurationService.Configuration.Environments}"
+                                                 SelectedItem="{Binding ViewModel.EditingApplication.EnvironmentGuid,Converter={x:Static cvt:GuidToEnvironmentConverter.Instance},Mode=TwoWay}">
                                         <ws:ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Name}"/>

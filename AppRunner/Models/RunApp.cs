@@ -41,22 +41,6 @@ namespace AppRunner.Models
         [ObservableProperty]
         private bool _createNoWindow;
 
-        private void HandleStartException(Exception ex)
-        {
-            if (DialogLayer.GetDialogLayer(Application.Current.MainWindow) is DialogLayer dialogLayer)
-            {
-                dialogLayer.Push(new Dialog()
-                {
-                    Content = new SimpleMessageToast()
-                    {
-                        MaxWidth = 450,
-                        Title = Strings.Common_Error,
-                        Message = ex.Message,
-                    }
-                });
-            }
-        }
-
         public RunApp Clone()
         {
             var newApp = new RunApp();
@@ -74,84 +58,18 @@ namespace AppRunner.Models
             runApp.RunAsAdministrator = RunAsAdministrator;
             runApp.CreateNoWindow = CreateNoWindow;
             runApp.UseShellExecute = UseShellExecute;
+            runApp.EnvironmentGuid = EnvironmentGuid;
         }
 
 
         [RelayCommand]
         public async Task Start()
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo()
-            {
-                FileName = FileName,
-                Arguments = CommandLineArguments,
-                CreateNoWindow = CreateNoWindow,
-                UseShellExecute = UseShellExecute,
-            };
-
-            if (RunAsAdministrator)
-            {
-                startInfo.UseShellExecute = true;
-                startInfo.Verb = "runas";
-            }
-
-            try
-            {
-                var process = Process.Start(startInfo);
-
-                if (process is not null)
-                {
-                    // wait for start
-
-                    await Task.Run(() =>
-                    {
-                        try
-                        {
-                            process.WaitForInputIdle();
-                        }
-                        catch { }
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                HandleStartException(ex);
-            }
         }
 
         [RelayCommand]
         public async Task StartAsAdministrator()
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo()
-            {
-                FileName = FileName,
-                Arguments = CommandLineArguments,
-                CreateNoWindow = CreateNoWindow,
-                UseShellExecute = true,
-                Verb = "RunAs"
-            };
-
-            try
-            {
-                var process = Process.Start(startInfo);
-
-                if (process is not null)
-                {
-                    // wait for start
-
-                    await Task.Run(() =>
-                    {
-                        try
-                        {
-                            process.WaitForInputIdle();
-                        }
-                        catch { }
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                HandleStartException(ex);
-            }
         }
     }
 }

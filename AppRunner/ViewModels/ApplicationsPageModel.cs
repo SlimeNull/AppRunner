@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using AppRunner.Controls;
 using AppRunner.Models;
 using AppRunner.Resources;
 using AppRunner.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using EleCho.WpfSuite.Controls;
 
 namespace AppRunner.ViewModels
 {
@@ -36,6 +40,44 @@ namespace AppRunner.ViewModels
             this._configurationService = configurationService;
         }
 
+
+        private void HandleStartException(Exception ex)
+        {
+            if (DialogLayer.GetDialogLayer(Application.Current.MainWindow) is DialogLayer dialogLayer)
+            {
+                dialogLayer.Push(new Dialog()
+                {
+                    Content = new SimpleMessageToast()
+                    {
+                        MaxWidth = 450,
+                        Title = Strings.Common_Error,
+                        Message = ex.Message,
+                    }
+                });
+            }
+        }
+
+        private void ApplyEnvironementBeforeApplicationStart(
+            ProcessStartInfo processStartInfo,
+            Guid environmentGuid)
+        {
+            if (_configurationService.Configuration.Environments?.FirstOrDefault(env => env.Guid == environmentGuid) is not RunEnvironment env)
+            {
+                return;
+            }
+
+            processStartInfo.WorkingDirectory = Environment.ExpandEnvironmentVariables(env.WorkingDirectory);
+
+            foreach (var var in env.EnvironmentVariables)
+            {
+                if (string.IsNullOrWhiteSpace(var.Key))
+                {
+                    continue;
+                }
+
+                Environment.SetEnvironmentVariable(var.Key, var.Value);
+            }
+        }
 
         [RelayCommand]
         public void AddNewApplication()
@@ -84,5 +126,99 @@ namespace AppRunner.ViewModels
             _configurationService.SaveConfiguration();
         }
 
+        [RelayCommand]
+        public async Task ApplyEnvironmentVariables(RunEnvironment env)
+        {
+            foreach (var var in env.EnvironmentVariables)
+            {
+                if (string.IsNullOrWhiteSpace(var.Key))
+                {
+                    continue;
+                }
+
+                Environment.SetEnvironmentVariable(var.Key, var.Value);
+            }
+        }
+
+        [RelayCommand]
+        public async Task RunApplication(RunApp app)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = Environment.ExpandEnvironmentVariables(app.FileName),
+                Arguments = Environment.ExpandEnvironmentVariables(app.CommandLineArguments),
+                CreateNoWindow = app.CreateNoWindow,
+                UseShellExecute = app.UseShellExecute,
+            };
+
+            if (app.RunAsAdministrator)
+            {
+                startInfo.UseShellExecute = true;
+                startInfo.Verb = "runas";
+            }
+
+            try
+            {
+                ApplyEnvironementBeforeApplicationStart(startInfo, app.EnvironmentGuid);
+
+                var process = Process.Start(startInfo);
+
+                if (process is not null)
+                {
+                    // wait for start
+
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            process.WaitForInputIdle();
+                        }
+                        catch { }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleStartException(ex);
+            }
+        }
+
+        [RelayCommand]
+        public async Task RunApplicationAsAdministrator(RunApp app)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = Environment.ExpandEnvironmentVariables(app.FileName),
+                Arguments = Environment.ExpandEnvironmentVariables(app.CommandLineArguments),
+                CreateNoWindow = app.CreateNoWindow,
+                UseShellExecute = true,
+                Verb = "RunAs"
+            };
+
+            try
+            {
+                ApplyEnvironementBeforeApplicationStart(startInfo, app.EnvironmentGuid);
+
+                var process = Process.Start(startInfo);
+
+                if (process is not null)
+                {
+                    // wait for start
+
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            process.WaitForInputIdle();
+                        }
+                        catch { }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleStartException(ex);
+            }
+        }
     }
 }

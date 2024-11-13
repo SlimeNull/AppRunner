@@ -10,6 +10,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="EnvironmentsPage"
+      d:Background="#f0f0f0"
       d:DataContext="{d:DesignInstance Type=local:EnvironmentsPage}">
 
     <Page.Resources>
