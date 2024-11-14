@@ -67,16 +67,16 @@
                                             </ws:Button.Resources>
                                             <ws:Button.ContextMenu>
                                                 <ws:ContextMenu>
-                                                    <MenuItem Header="{mk:LocalString Menu.Run}"
-                                                              Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationCommand}"
-                                                              CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
-                                                    <MenuItem Header="{mk:LocalString Menu.Edit}"
-                                                              Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.EditApplicationCommand}"
-                                                              CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
-                                                    <MenuItem Header="{mk:LocalString Menu.RunAsAdministrator}"
-                                                              Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationAsAdministratorCommand}"
-                                                              CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
-                                                    <MenuItem Header="{mk:LocalString Menu.RunWithEnvironment}"/>
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.Run}"
+                                                                 Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationCommand}"
+                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.Edit}"
+                                                                 Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.EditApplicationCommand}"
+                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.RunAsAdministrator}"
+                                                                 Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationAsAdministratorCommand}"
+                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.RunWithEnvironment}"/>
                                                 </ws:ContextMenu>
                                             </ws:Button.ContextMenu>
                                         </ws:Button>
