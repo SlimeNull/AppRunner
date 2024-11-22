@@ -68,14 +68,17 @@ namespace AppRunner.ViewModels
 
             processStartInfo.WorkingDirectory = Environment.ExpandEnvironmentVariables(env.WorkingDirectory);
 
-            foreach (var var in env.EnvironmentVariables)
+            if (env.EnvironmentVariables is not null)
             {
-                if (string.IsNullOrWhiteSpace(var.Key))
+                foreach (var var in env.EnvironmentVariables)
                 {
-                    continue;
-                }
+                    if (string.IsNullOrWhiteSpace(var.Key))
+                    {
+                        continue;
+                    }
 
-                Environment.SetEnvironmentVariable(var.Key, var.Value);
+                    Environment.SetEnvironmentVariable(var.Key, var.Value);
+                }
             }
         }
 
@@ -105,7 +108,7 @@ namespace AppRunner.ViewModels
         }
 
         [RelayCommand]
-        public void ConfirmEditApplicationDialog()
+        public async Task ConfirmEditApplicationDialog()
         {
             if (EditingApplication is not null)
             {
@@ -123,12 +126,17 @@ namespace AppRunner.ViewModels
             IsCreatingNewApplication = false;
 
             _configurationService.Configuration.Applications = Applications.ToArray();
-            _configurationService.SaveConfiguration();
+            await _configurationService.SaveConfiguration();
         }
 
         [RelayCommand]
-        public async Task ApplyEnvironmentVariables(RunEnvironment env)
+        public void ApplyEnvironmentVariables(RunEnvironment env)
         {
+            if (env.EnvironmentVariables is null)
+            {
+                return;
+            }
+
             foreach (var var in env.EnvironmentVariables)
             {
                 if (string.IsNullOrWhiteSpace(var.Key))
@@ -141,8 +149,22 @@ namespace AppRunner.ViewModels
         }
 
         [RelayCommand]
-        public async Task RunApplication(RunApp app)
+        public Task RunApplication(RunApp app)
         {
+            return RunApplicationWithEnvironment(new RunAppAndEnvironmentGuid(app, app.EnvironmentGuid));
+        }
+
+        [RelayCommand]
+        public async Task RunApplicationWithEnvironment(RunAppAndEnvironmentGuid appAndEnvironment)
+        {
+            var app = appAndEnvironment.App;
+            var envGuid = appAndEnvironment.EnvironmentGuid;
+
+            if (app is null)
+            {
+                throw new InvalidOperationException();
+            }
+
             ProcessStartInfo startInfo = new ProcessStartInfo()
             {
                 FileName = Environment.ExpandEnvironmentVariables(app.FileName),
@@ -159,7 +181,7 @@ namespace AppRunner.ViewModels
 
             try
             {
-                ApplyEnvironementBeforeApplicationStart(startInfo, app.EnvironmentGuid);
+                ApplyEnvironementBeforeApplicationStart(startInfo, envGuid);
 
                 var process = Process.Start(startInfo);
 
@@ -219,6 +241,15 @@ namespace AppRunner.ViewModels
             {
                 HandleStartException(ex);
             }
+        }
+
+        [RelayCommand]
+        public async Task DeleteApplication(RunApp app)
+        {
+            Applications.Remove(app);
+
+            _configurationService.Configuration.Applications = Applications.ToArray();
+            await _configurationService.SaveConfiguration();
         }
     }
 }

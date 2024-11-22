@@ -66,16 +66,5 @@ namespace AppRunner.Models
             runApp.UseShellExecute = UseShellExecute;
             runApp.EnvironmentGuid = EnvironmentGuid;
         }
-
-
-        [RelayCommand]
-        public async Task Start()
-        {
-        }
-
-        [RelayCommand]
-        public async Task StartAsAdministrator()
-        {
-        }
     }
 }

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AppRunner": {
+      "commandName": "Project",
+      "commandLineArgs": "--language zh-CN"
+    }
+  }
+}

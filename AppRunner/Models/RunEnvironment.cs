@@ -17,7 +17,7 @@ namespace AppRunner.Models
         [ObservableProperty]
         private string _workingDirectory = string.Empty;
 
-        public List<ReferenceKeyValuePair<string, string>> EnvironmentVariables { get; } = new();
+        public List<ReferenceKeyValuePair<string, string>>? EnvironmentVariables { get; set; } 
 
         private void HandleStartException(Exception ex)
         {
@@ -37,20 +37,17 @@ namespace AppRunner.Models
             runApp.Name = Name;
             runApp.Description = Description;
             runApp.WorkingDirectory = WorkingDirectory;
-            runApp.EnvironmentVariables.Clear();
-            runApp.EnvironmentVariables.AddRange(EnvironmentVariables.Select(v => v with { }));
-        }
-
-        [RelayCommand]
-        public void Apply()
-        {
-
-        }
-
-        [RelayCommand]
-        public void ApplyVariablesToSystem()
-        {
-
+            
+            if (EnvironmentVariables is null)
+            {
+                runApp.EnvironmentVariables = null;
+            }
+            else
+            {
+                runApp.EnvironmentVariables = EnvironmentVariables
+                    .Select(p => p with { })
+                    .ToList();
+            }
         }
     }
 }

@@ -1,9 +1,13 @@
 ﻿using System.Configuration;
 using System.Data;
+using System.Globalization;
 using System.Windows;
+using AppRunner.Models;
+using AppRunner.Resources;
 using AppRunner.Services;
 using AppRunner.ViewModels;
 using AppRunner.Views;
+using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AppRunner
@@ -39,8 +43,15 @@ namespace AppRunner
 
 
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
+            // load configuration 
+            await Services
+                .GetRequiredService<ConfigurationService>()
+                .LoadConfiguration();
+
+            // 
+
             // show main window
             Services
                 .GetRequiredService<MainWindow>()

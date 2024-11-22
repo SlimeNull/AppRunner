@@ -38,6 +38,25 @@ namespace AppRunner.ViewModels
 
 
         [RelayCommand]
+        public void DeployEnvironment(RunEnvironment env)
+        {
+            Environment.CurrentDirectory = env.WorkingDirectory;
+
+            if (env.EnvironmentVariables is not null)
+            {
+                foreach (var var in env.EnvironmentVariables)
+                {
+                    if (string.IsNullOrWhiteSpace(var.Key))
+                    {
+                        continue;
+                    }
+
+                    Environment.SetEnvironmentVariable(var.Key, var.Value);
+                }
+            }
+        }
+
+        [RelayCommand]
         public void AddNewEnvironment()
         {
             EditEnvironmentDialogTitle = Strings.Title_AddNewEnvironment;
@@ -79,6 +98,16 @@ namespace AppRunner.ViewModels
 
             IsEditEnvironmentDialogOpen = false;
             IsCreatingNewEnvironment = false;
+
+            _configurationService.Configuration.Environments = Environments.ToArray();
+            _configurationService.SaveConfiguration();
+        }
+
+
+        [RelayCommand]
+        public void DeleteEnvironment(RunEnvironment env)
+        {
+            Environments.Remove(env);
 
             _configurationService.Configuration.Environments = Environments.ToArray();
             _configurationService.SaveConfiguration();

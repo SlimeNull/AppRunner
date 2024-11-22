@@ -2,16 +2,18 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <StartupObject>AppRunner.EntryPoint</StartupObject>
+    <Platforms>AnyCPU;x64;ARM32;ARM64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
-    <PackageReference Include="EleCho.WpfSuite" Version="0.9.7" />
+    <PackageReference Include="EleCho.WpfSuite" Version="0.9.9.2" />
     <PackageReference Include="EleCho.WpfSuite.FluentDesign" Version="0.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="RustSharp" Version="1.0.3" />

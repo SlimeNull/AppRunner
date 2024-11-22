@@ -12,8 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AppRunner.Models;
 using AppRunner.Services;
 using AppRunner.ViewModels;
+using CommunityToolkit.Mvvm.Input;
 
 namespace AppRunner.Views
 {
@@ -40,6 +42,7 @@ namespace AppRunner.Views
                 }
             }
         }
+
 
         public EnvironmentsPageModel ViewModel { get; }
         public ConfigurationService ConfigurationService { get; }

@@ -219,4 +219,7 @@
   <data name="Label.UseShellExecute" xml:space="preserve">
     <value>Use ShellExecute</value>
   </data>
+  <data name="Menu.Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
 </root>

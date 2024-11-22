@@ -12,29 +12,22 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AppRunner.Converters
 {
-    class GuidToEnvironmentConverter : SingletonValueConverterBase<GuidToEnvironmentConverter>
+    class GuidToEnvironmentConverter : SingletonValueConverterBase<GuidToEnvironmentConverter, Guid, RunEnvironment>
     {
         private readonly ConfigurationService _configurationService = 
             App.Services.GetRequiredService<ConfigurationService>();
 
-        public override object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-        {
-            if (value is Guid guid)
-            {
-                return _configurationService.Configuration.Environments?.FirstOrDefault(e => e.Guid == guid);
-            }
+        public override Guid DefaultSourceValue => default;
+        public override RunEnvironment? DefaultTargetValue => null;
 
-            return null;
+        public override RunEnvironment? Convert(Guid value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            return _configurationService.Configuration.Environments?.FirstOrDefault(e => e.Guid == value);
         }
 
-        public override object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        public override Guid ConvertBack(RunEnvironment value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is RunEnvironment env)
-            {
-                return env.Guid;
-            }
-
-            return default(Guid);
+            return value.Guid;
         }
     }
 }

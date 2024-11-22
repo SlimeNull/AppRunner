@@ -17,6 +17,8 @@
     <Page.Resources>
         <ws:BindingProxy x:Key="ViewModelProxy"
                          Data="{Binding ViewModel}"/>
+        <ws:BindingProxy x:Key="ConfigurationProxy"
+                         Data="{Binding ConfigurationService.Configuration}"/>
         <ws:NumberCompareConverter x:Key="NumberNotZeroConverter"
                                    Comparison="NotEqual"
                                    TargetValue="0"/>
@@ -69,14 +71,25 @@
                                                 <ws:ContextMenu>
                                                     <ws:MenuItem Header="{mk:LocalString Menu.Run}"
                                                                  Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationCommand}"
-                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
+                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"
+                                                                 FontFamily="{StaticResource FontDingDing}"/>
                                                     <ws:MenuItem Header="{mk:LocalString Menu.Edit}"
                                                                  Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.EditApplicationCommand}"
-                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
+                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"
+                                                                 FontFamily="{StaticResource FontDingDing}"/>
                                                     <ws:MenuItem Header="{mk:LocalString Menu.RunAsAdministrator}"
                                                                  Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationAsAdministratorCommand}"
-                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"/>
-                                                    <ws:MenuItem Header="{mk:LocalString Menu.RunWithEnvironment}"/>
+                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"
+                                                                 FontFamily="{StaticResource FontDingDing}"/>
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.RunWithEnvironment}"
+                                                                 FontFamily="{StaticResource FontDingDing}"
+                                                                 ItemsSource="{Binding Source={StaticResource ConfigurationProxy},Path=Data.Environments}">
+                                                        
+                                                    </ws:MenuItem>
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.Delete}"
+                                                                 Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.DeleteApplicationCommand}"
+                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"
+                                                                 FontFamily="{StaticResource FontDingDing}"/>
                                                 </ws:ContextMenu>
                                             </ws:Button.ContextMenu>
                                         </ws:Button>
@@ -99,14 +112,18 @@
         <ws:Dialog IsOpen="{Binding ViewModel.IsEditApplicationDialogOpen,Mode=TwoWay}">
             <Border Background="#ffffff"
                     MinWidth="320"
-                    CornerRadius="8"
-                    Padding="14">
+                    CornerRadius="8">
                 <DockPanel>
+                    <TextBlock Text="{Binding ViewModel.EditApplicationDialogTitle}"
+                               FontSize="18"
+                               Margin="14 14 14 16"
+                               DockPanel.Dock="Top"/>
+
                     <ws:StackPanel Spacing="4"
                                    HorizontalAlignment="Right"
                                    Orientation="Horizontal"
-                                   DockPanel.Dock="Bottom"
-                                   Margin="0 8 0 0">
+                                   Margin="14 8 14 14"
+                                   DockPanel.Dock="Bottom">
 
                         <ws:Button Command="{Binding ViewModel.ConfirmEditApplicationDialogCommand}"
                                    Content="{mk:LocalString Common.OK}"
@@ -117,12 +134,10 @@
                                    MinWidth="60"/>
                     </ws:StackPanel>
 
-                    <ws:ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ws:ScrollViewer VerticalScrollBarVisibility="Auto"
+                                     Padding="14 0"
+                                     >
                         <StackPanel>
-                            <TextBlock Text="{Binding ViewModel.EditApplicationDialogTitle}"
-                                       FontSize="18"
-                                       Margin="0 0 0 16"/>
-
                             <ws:StackPanel Spacing="12">
                                 <ws:StackPanel Spacing="4">
                                     <StackPanel Orientation="Horizontal">

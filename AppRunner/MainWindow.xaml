@@ -141,7 +141,8 @@
             </Grid>
             <ws:DialogLayer Grid.RowSpan="3"
                             Grid.ColumnSpan="2"
-                            Mask="#33000000">
+                            Mask="#33000000"
+                            Padding="100 80">
                 <ws:DialogLayer.MaskTransition>
                     <ws:FadeTransition Duration="0:0:0.150"/>
                 </ws:DialogLayer.MaskTransition>

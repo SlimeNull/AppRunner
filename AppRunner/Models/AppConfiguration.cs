@@ -15,6 +15,7 @@ namespace AppRunner.Models
         [ObservableProperty]
         private RunEnvironment[]? _environments;
 
-
+        [ObservableProperty]
+        private DefaultWorkingDirectory _defaultWorkingDirectory;
     }
 }
