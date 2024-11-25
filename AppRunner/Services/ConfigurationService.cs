@@ -27,7 +27,7 @@ namespace AppRunner.Services
         {
             var fileItem = await _localStorageFolder.TryGetItemAsync(ConfigurationFileName);
 
-            if (!fileItem.IsOfType(StorageItemTypes.File))
+            if (fileItem is not StorageFile file)
             {
                 _loadedConfiguration = new AppConfiguration();
                 return;
@@ -35,7 +35,6 @@ namespace AppRunner.Services
 
             try
             {
-                var file = await _localStorageFolder.GetFileAsync(ConfigurationFileName);
                 using var fileStream = await file.OpenReadAsync();
                 using var fileStreamReader = new StreamReader(fileStream.AsStreamForRead());
                 var configurationText = await fileStreamReader.ReadToEndAsync();
