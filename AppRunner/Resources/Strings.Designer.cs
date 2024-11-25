@@ -286,6 +286,15 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to App file name can not be empty.
+        /// </summary>
+        internal static string Message_AppFileNameCanNotBeEmpty {
+            get {
+                return ResourceManager.GetString("Message.AppFileNameCanNotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to run application.
         /// </summary>
         internal static string Message_FailedToRunApplication {

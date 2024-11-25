@@ -10,6 +10,7 @@ using AppRunner.Controls;
 using AppRunner.Models;
 using AppRunner.Resources;
 using AppRunner.Services;
+using AppRunner.Utilities;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EleCho.WpfSuite.Controls;
@@ -43,26 +44,16 @@ namespace AppRunner.ViewModels
 
         private void HandleStartException(Exception ex)
         {
-            if (DialogLayer.GetDialogLayer(Application.Current.MainWindow) is DialogLayer dialogLayer)
-            {
-                dialogLayer.Push(new Dialog()
-                {
-                    Content = new SimpleMessageToast()
-                    {
-                        MaxWidth = 450,
-                        Title = Strings.Common_Error,
-                        Message = ex.Message,
-                    }
-                });
-            }
+            MessageUtils.ShowDialogMessage(Strings.Common_Error, ex.Message);
         }
 
         private void ApplyEnvironementBeforeApplicationStart(
             ProcessStartInfo processStartInfo,
-            Guid environmentGuid)
+            RunEnvironment? env)
         {
-            if (_configurationService.Configuration.Environments?.FirstOrDefault(env => env.Guid == environmentGuid) is not RunEnvironment env)
+            if (env is null)
             {
+                // do nothing
                 return;
             }
 
@@ -148,99 +139,84 @@ namespace AppRunner.ViewModels
             }
         }
 
-        [RelayCommand]
-        public Task RunApplication(RunApp app)
+        public async Task RunApplication(RunApp app, RunEnvironment? environmentOverride, bool? runAsAdministratorOverride)
         {
-            return RunApplicationWithEnvironment(new RunAppAndEnvironmentGuid(app, app.EnvironmentGuid));
+            if (string.IsNullOrWhiteSpace(app.FileName))
+            {
+                MessageUtils.ShowDialogMessage(Strings.Common_Error, Strings.Message_AppFileNameCanNotBeEmpty);
+            }
+
+            var trimmedAppFileName = app.FileName.Trim('"');
+
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = Environment.ExpandEnvironmentVariables(trimmedAppFileName),
+                Arguments = Environment.ExpandEnvironmentVariables(app.CommandLineArguments),
+                CreateNoWindow = app.CreateNoWindow,
+                UseShellExecute = app.UseShellExecute,
+            };
+
+            if (runAsAdministratorOverride ?? app.RunAsAdministrator)
+            {
+                startInfo.UseShellExecute = true;
+                startInfo.Verb = "runas";
+            }
+
+            var appEnvironemnt = _configurationService.Configuration.Environments?.FirstOrDefault(env => env.Guid == app.EnvironmentGuid);
+
+            try
+            {
+                ApplyEnvironementBeforeApplicationStart(startInfo, environmentOverride ?? appEnvironemnt);
+
+                var process = Process.Start(startInfo);
+
+                if (process is not null)
+                {
+                    // wait for start
+
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            process.WaitForInputIdle();
+                        }
+                        catch { }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleStartException(ex);
+            }
         }
 
         [RelayCommand]
-        public async Task RunApplicationWithEnvironment(RunAppAndEnvironmentGuid appAndEnvironment)
+        public Task RunApplication(RunApp app)
+        {
+            return RunApplication(app, null, null);
+        }
+
+        [RelayCommand]
+        public Task RunApplicationWithEnvironment(RunAppAndEnvironmentGuid appAndEnvironment)
         {
             var app = appAndEnvironment.App;
             var envGuid = appAndEnvironment.EnvironmentGuid;
 
             if (app is null)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("This would never happen");
             }
 
-            ProcessStartInfo startInfo = new ProcessStartInfo()
-            {
-                FileName = Environment.ExpandEnvironmentVariables(app.FileName),
-                Arguments = Environment.ExpandEnvironmentVariables(app.CommandLineArguments),
-                CreateNoWindow = app.CreateNoWindow,
-                UseShellExecute = app.UseShellExecute,
-            };
+            var specifiedEnvironment =
+                _configurationService.Configuration.Environments?.FirstOrDefault(env => env.Guid == envGuid);
 
-            if (app.RunAsAdministrator)
-            {
-                startInfo.UseShellExecute = true;
-                startInfo.Verb = "runas";
-            }
-
-            try
-            {
-                ApplyEnvironementBeforeApplicationStart(startInfo, envGuid);
-
-                var process = Process.Start(startInfo);
-
-                if (process is not null)
-                {
-                    // wait for start
-
-                    await Task.Run(() =>
-                    {
-                        try
-                        {
-                            process.WaitForInputIdle();
-                        }
-                        catch { }
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                HandleStartException(ex);
-            }
+            return RunApplication(app, specifiedEnvironment, null);
         }
 
         [RelayCommand]
-        public async Task RunApplicationAsAdministrator(RunApp app)
+        public Task RunApplicationAsAdministrator(RunApp app)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo()
-            {
-                FileName = Environment.ExpandEnvironmentVariables(app.FileName),
-                Arguments = Environment.ExpandEnvironmentVariables(app.CommandLineArguments),
-                CreateNoWindow = app.CreateNoWindow,
-                UseShellExecute = true,
-                Verb = "RunAs"
-            };
-
-            try
-            {
-                ApplyEnvironementBeforeApplicationStart(startInfo, app.EnvironmentGuid);
-
-                var process = Process.Start(startInfo);
-
-                if (process is not null)
-                {
-                    // wait for start
-
-                    await Task.Run(() =>
-                    {
-                        try
-                        {
-                            process.WaitForInputIdle();
-                        }
-                        catch { }
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                HandleStartException(ex);
-            }
+            return RunApplication(app, null, true);
         }
 
         [RelayCommand]

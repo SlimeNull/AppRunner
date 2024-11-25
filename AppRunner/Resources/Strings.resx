@@ -222,4 +222,7 @@
   <data name="Menu.Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="Message.AppFileNameCanNotBeEmpty" xml:space="preserve">
+    <value>App file name can not be empty</value>
+  </data>
 </root>

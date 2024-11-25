@@ -199,4 +199,7 @@
   <data name="Menu.Delete" xml:space="preserve">
     <value>删除</value>
   </data>
+  <data name="Message.AppFileNameCanNotBeEmpty" xml:space="preserve">
+    <value>应用文件名不可为空</value>
+  </data>
 </root>
