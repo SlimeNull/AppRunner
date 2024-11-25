@@ -63,6 +63,10 @@
         <Setter Property="FontFamily" Value="{StaticResource FontDingDing}"/>
 
         <Setter Property="HighlightedBackground" Value="#10000000"/>
+
+        <Setter Property="PopupCornerRadius" Value="6"/>
+        <Setter Property="PopupBackground" Value="White"/>
+        <Setter Property="PopupBorderBrush" Value="#e0e0e0"/>
     </Style>
 
     <Style TargetType="ws:ScrollBar">
