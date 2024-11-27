@@ -153,9 +153,8 @@
                     </ws:StackPanel>
 
                     <ws:ScrollViewer VerticalScrollBarVisibility="Auto"
-                                     Padding="14 0"
-                                     >
-                        <StackPanel>
+                                     Padding="14 0">
+                        <StackPanel Margin="0 0 0 14">
                             <ws:StackPanel Spacing="12">
                                 <ws:StackPanel Spacing="4">
                                     <StackPanel Orientation="Horizontal">
@@ -211,6 +210,17 @@
                                         </ws:ComboBox.ItemTemplate>
                                     </ws:ComboBox>
                                 </ws:StackPanel>
+
+                                <ws:StackPanel Spacing="4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.Group}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <ws:ComboBox ItemsSource="{Binding ConfigurationService.Configuration.Applications,Converter={x:Static cvt:GroupableCollectionToGroupsConverter.Instance},Mode=OneWay}"
+                                                 Text="{Binding ViewModel.EditingApplication.Group,Mode=TwoWay}"
+                                                 IsEditable="True">
+                                    </ws:ComboBox>
+                                </ws:StackPanel>
                             </ws:StackPanel>
 
                             <ws:StackPanel Spacing="4"
@@ -245,5 +255,6 @@
                 </DockPanel>
             </Border>
         </ws:Dialog>
+        
     </Grid>
 </Page>

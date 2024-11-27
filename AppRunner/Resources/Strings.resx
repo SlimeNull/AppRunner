@@ -225,4 +225,13 @@
   <data name="Message.AppFileNameCanNotBeEmpty" xml:space="preserve">
     <value>App file name can not be empty</value>
   </data>
+  <data name="Label.Group" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="Tooltip.SelectGroup" xml:space="preserve">
+    <value>Select Group</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Select</value>
+  </data>
 </root>

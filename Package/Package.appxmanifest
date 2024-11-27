@@ -8,8 +8,8 @@
 
   <Identity
     Name="SlimeNull.AppRunner"
-    Publisher="CN=3AFF72CF-75D2-429A-9ED9-FEEF63573EA6"
-    Version="1.0.0.0" />
+    Publisher="CN=SlimeNull"
+    Version="1.0.1.0" />
 
   <Properties>
     <DisplayName>AppRunner</DisplayName>

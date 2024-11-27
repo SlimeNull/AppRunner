@@ -10,6 +10,7 @@
         <Setter Property="PressedBorderBrush" Value="#22000000"/>
         <Setter Property="Padding" Value="14 6"/>
         <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     </Style>
 
     <Style TargetType="ws:ComboBox">
@@ -18,8 +19,11 @@
         <Setter Property="HoverBackground" Value="{x:Null}"/>
         <Setter Property="PressedBackground" Value="#F8F8F8"/>
         <Setter Property="BorderBrush" Value="#c4c4c4"/>
+        <Setter Property="EditableBorderBrush" Value="#c4c4c4"/>
         <Setter Property="HoverBorderBrush" Value="#b2b2b2"/>
+        <Setter Property="EditableHoverBorderBrush" Value="#b2b2b2"/>
         <Setter Property="PressedBorderBrush" Value="{x:Null}"/>
+        <Setter Property="EditablePressedBorderBrush" Value="{x:Null}"/>
         <Setter Property="PopupCornerRadius" Value="4"/>
         <Setter Property="PopupBorderBrush" Value="#c4c4c4"/>
         <Setter Property="CornerRadius" Value="4"/>

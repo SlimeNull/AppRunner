@@ -115,6 +115,15 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select.
+        /// </summary>
+        internal static string Common_Select {
+            get {
+                return ResourceManager.GetString("Common.Select", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
         internal static string Common_Yes {
@@ -201,6 +210,15 @@ namespace AppRunner.Resources {
         internal static string Label_FileNameOrPath {
             get {
                 return ResourceManager.GetString("Label.FileNameOrPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        internal static string Label_Group {
+            get {
+                return ResourceManager.GetString("Label.Group", resourceCulture);
             }
         }
         
@@ -381,6 +399,15 @@ namespace AppRunner.Resources {
         internal static string Title_EditEnvironment {
             get {
                 return ResourceManager.GetString("Title.EditEnvironment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Group.
+        /// </summary>
+        internal static string Tooltip_SelectGroup {
+            get {
+                return ResourceManager.GetString("Tooltip.SelectGroup", resourceCulture);
             }
         }
     }

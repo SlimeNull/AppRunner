@@ -120,7 +120,7 @@
 
                     <ws:ScrollViewer VerticalScrollBarVisibility="Auto"
                                      Padding="14 0">
-                        <StackPanel>
+                        <StackPanel Margin="0 0 0 14">
                             <ws:StackPanel Spacing="12">
                                 <ws:StackPanel Spacing="4">
                                     <StackPanel Orientation="Horizontal">
@@ -161,6 +161,17 @@
                                                 PlaceholderBrush="#55000000"
                                                 AcceptsReturn="True"
                                                 Text="{Binding ViewModel.EditingEnvironment.EnvironmentVariables,Converter={x:Static cvt:EnvironmentVariablesToTextConverter.Instance}}"/>
+                                </ws:StackPanel>
+
+                                <ws:StackPanel Spacing="4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.Group}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <ws:ComboBox ItemsSource="{Binding ConfigurationService.Configuration.Environments,Converter={x:Static cvt:GroupableCollectionToGroupsConverter.Instance},Mode=OneWay}"
+                                                 Text="{Binding ViewModel.EditingEnvironment.Group,Mode=TwoWay}"
+                                                 IsEditable="True">
+                                    </ws:ComboBox>
                                 </ws:StackPanel>
                             </ws:StackPanel>
                         </StackPanel>

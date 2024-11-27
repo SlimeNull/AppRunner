@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using AppRunner.Abstraction;
 using AppRunner.Controls;
 using AppRunner.Resources;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -13,7 +14,7 @@ using EleCho.WpfSuite.Controls;
 
 namespace AppRunner.Models
 {
-    public partial class RunApp : ObservableObject
+    public partial class RunApp : ObservableObject, IGroupable
     {
         public Guid Guid { get; set; } = Guid.NewGuid();
 
@@ -44,6 +45,9 @@ namespace AppRunner.Models
         [ObservableProperty]
         private bool _createNoWindow;
 
+        [ObservableProperty]
+        private string _group = string.Empty;
+
         public bool MustUseShellExecute => RunAsAdministrator;
         public bool IsUsingShellExecute => UseShellExecute || MustUseShellExecute;
 
@@ -65,6 +69,7 @@ namespace AppRunner.Models
             runApp.CreateNoWindow = CreateNoWindow;
             runApp.UseShellExecute = UseShellExecute;
             runApp.EnvironmentGuid = EnvironmentGuid;
+            runApp.Group = Group;
         }
     }
 }

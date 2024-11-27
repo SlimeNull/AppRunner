@@ -1,10 +1,11 @@
-﻿using AppRunner.Data;
+﻿using AppRunner.Abstraction;
+using AppRunner.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace AppRunner.Models
 {
-    public partial class RunEnvironment : ObservableObject
+    public partial class RunEnvironment : ObservableObject, IGroupable
     {
         public Guid Guid { get; set; } = Guid.NewGuid();
 
@@ -16,6 +17,9 @@ namespace AppRunner.Models
 
         [ObservableProperty]
         private string _workingDirectory = string.Empty;
+
+        [ObservableProperty]
+        private string _group = string.Empty;
 
         public List<ReferenceKeyValuePair<string, string>>? EnvironmentVariables { get; set; } 
 
@@ -37,6 +41,7 @@ namespace AppRunner.Models
             runApp.Name = Name;
             runApp.Description = Description;
             runApp.WorkingDirectory = WorkingDirectory;
+            runApp.Group = Group;
             
             if (EnvironmentVariables is null)
             {

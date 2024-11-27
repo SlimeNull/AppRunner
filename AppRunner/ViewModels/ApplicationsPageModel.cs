@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,9 @@ namespace AppRunner.ViewModels
 
         [ObservableProperty]
         private bool _isEditApplicationDialogOpen;
+
+        [ObservableProperty]
+        private bool _isSelectGroupDialogOpen;
 
         [ObservableProperty]
         private bool _isCreatingNewApplication;
@@ -57,7 +61,21 @@ namespace AppRunner.ViewModels
                 return;
             }
 
-            processStartInfo.WorkingDirectory = Environment.ExpandEnvironmentVariables(env.WorkingDirectory);
+            var workingDirectory = Environment.ExpandEnvironmentVariables(env.WorkingDirectory);
+
+            if (!string.IsNullOrWhiteSpace(workingDirectory) && Directory.Exists(workingDirectory))
+            {
+                processStartInfo.WorkingDirectory = workingDirectory;
+            }
+            else
+            {
+                processStartInfo.WorkingDirectory = _configurationService.Configuration.DefaultWorkingDirectory switch
+                {
+                    DefaultWorkingDirectory.WorkingDirectoryOfCurrentApp => Environment.CurrentDirectory,
+                    DefaultWorkingDirectory.UserProfile => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    _ => string.Empty
+                };
+            }
 
             if (env.EnvironmentVariables is not null)
             {
@@ -118,6 +136,12 @@ namespace AppRunner.ViewModels
 
             _configurationService.Configuration.Applications = Applications.ToArray();
             await _configurationService.SaveConfiguration();
+        }
+
+        [RelayCommand]
+        public void SelectGroupForEditingApplication()
+        {
+            IsSelectGroupDialogOpen = true;
         }
 
         [RelayCommand]
