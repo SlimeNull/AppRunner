@@ -50,7 +50,7 @@ namespace AppRunner
             {
                 PageCommands =
                 {
-                    new PageCommand("\uF09B", "GitHub", App.Services.GetRequiredService<AboutPage>().OpenGithubRepositoryCommand)
+                    new PageCommand("\uF09B", "GitHub", App.Services.GetRequiredService<AboutPage>().OpenGithubRepositoryCommand, PageCommand.FontAwesomeBrands)
 
                 }
             }

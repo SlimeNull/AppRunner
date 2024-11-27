@@ -116,7 +116,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <ws:Button Style="{StaticResource ButtonStyles.Icon}"
-                                               FontFamily="{StaticResource FontAwesomeSolid}"
+                                               FontFamily="{Binding FontFamily}"
                                                Content="{Binding Icon}"
                                                Command="{Binding TargetCommand}"/>
                                 </DataTemplate>
