@@ -139,6 +139,7 @@
                                     </StackPanel>
                                     <ws:TextBox Placeholder="{mk:LocalString Label.Description}"
                                                 PlaceholderBrush="#55000000"
+                                                TextWrapping="Wrap"
                                                 Text="{Binding ViewModel.EditingEnvironment.Description}"/>
                                 </ws:StackPanel>
 
