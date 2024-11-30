@@ -157,10 +157,23 @@
                                         <TextBlock Text="{mk:LocalString Label.EnvironmentVariables}"/>
                                         <TextBlock Text=":"/>
                                     </StackPanel>
-                                    <ws:TextBox Placeholder="{mk:LocalString Label.EnvironmentVariables}"
+                                    <ws:TextBox Placeholder="{mk:LocalString Placeholder.EnvironmentVariables}"
                                                 PlaceholderBrush="#55000000"
                                                 AcceptsReturn="True"
+                                                ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                                 Text="{Binding ViewModel.EditingEnvironment.EnvironmentVariables,Converter={x:Static cvt:EnvironmentVariablesToTextConverter.Instance}}"/>
+                                </ws:StackPanel>
+
+                                <ws:StackPanel Spacing="4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{mk:LocalString Label.FileMaps}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <ws:TextBox Placeholder="{mk:LocalString Placeholder.FileMaps}"
+                                                PlaceholderBrush="#55000000"
+                                                AcceptsReturn="True"
+                                                ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                                Text="{Binding ViewModel.EditingEnvironment.FileMaps,Converter={x:Static cvt:FileMapsToTextConverter.Instance}}"/>
                                 </ws:StackPanel>
 
                                 <ws:StackPanel Spacing="4">

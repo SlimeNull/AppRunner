@@ -234,4 +234,13 @@
   <data name="Common.Select" xml:space="preserve">
     <value>Select</value>
   </data>
+  <data name="Label.FileMaps" xml:space="preserve">
+    <value>File maps</value>
+  </data>
+  <data name="Placeholder.EnvironmentVariables" xml:space="preserve">
+    <value>Name=Value</value>
+  </data>
+  <data name="Placeholder.FileMaps" xml:space="preserve">
+    <value>SourceFile&gt;DestinationFile</value>
+  </data>
 </root>

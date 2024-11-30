@@ -44,6 +44,20 @@ std::string UnicodeToAnsi(const std::wstring &str) {
     return strTemp;
 }
 
+void MakeFileFullPath(std::wstring &str) {
+    wchar_t *buffer = (wchar_t *)malloc(600);
+
+    auto size = GetFullPathNameW(str.c_str(), 300, buffer, nullptr);
+    if (size > 300) {
+        free(buffer);
+        buffer = (wchar_t *)malloc(size * 2);
+        GetFullPathNameW(str.c_str(), size, buffer, nullptr);
+    }
+
+    str = std::wstring(buffer);
+    free(buffer);
+}
+
 void MakeStringLower(std::string &str) {
     for (size_t i = 0; i < str.length(); i++) {
         str[i] = std::tolower(str[i]);
@@ -56,51 +70,43 @@ void MakeStringLower(std::wstring &str) {
     }
 }
 
-HANDLE HookCreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
-    char buffer[600]{ 0 };
-    auto getFullPathNameResult = GetFullPathNameA(lpFileName, 600, buffer, nullptr);
-    if (getFullPathNameResult != 0) {
-        lpFileName = buffer;
+bool GetFileMapTarget(const std::wstring &from, std::wstring &target) {
+    auto longPathPrefix = std::wstring(LR"(\\?\)");
+    auto key = from;
+    if (key.rfind(longPathPrefix, 0) == 0) {
+        key = key.substr(4, key.length() - 4);
     }
 
+    auto iterator = appRunnerFileMaps.find(key);
+    if (iterator != appRunnerFileMaps.end()) {
+        target = iterator->second;
+        return true;
+    }
+
+    return false;
+}
+
+HANDLE HookCreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
     auto fileName = AnsiToUnicode(std::string(lpFileName));
+    MakeFileFullPath(fileName);
     MakeStringLower(fileName);
 
-    auto valueIterator = appRunnerFileMaps.find(fileName);
-    if (valueIterator != appRunnerFileMaps.end()) {
-#if _DEBUG
-        auto msg = std::wstring(L"Creating file;");
-        msg += fileName;
-        msg += L";";
-        msg += valueIterator->second;
-        MessageBoxW(nullptr, msg.c_str(), nullptr, 0);
-#endif
-        fileName = valueIterator->second;
+    std::wstring mapTarget;
+    if (GetFileMapTarget(fileName, mapTarget)) {
+        fileName = mapTarget;
     }
 
     return funcCreateFileA(UnicodeToAnsi(fileName).c_str(), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
 }
 
 HANDLE HookCreateFileW(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
-    wchar_t buffer[300]{ 0 };
-    auto getFullPathNameResult = GetFullPathNameW(lpFileName, 300, buffer, nullptr);
-    if (getFullPathNameResult != 0) {
-        lpFileName = buffer;
-    }
-
     auto fileName = std::wstring(lpFileName);
+    MakeFileFullPath(fileName);
     MakeStringLower(fileName);
 
-    auto valueIterator = appRunnerFileMaps.find(fileName);
-    if (valueIterator != appRunnerFileMaps.end()) {
-#if _DEBUG
-        auto msg = std::wstring(L"Creating file;");
-        msg += fileName;
-        msg += L";";
-        msg += valueIterator->second;
-        MessageBoxW(nullptr, msg.c_str(), nullptr, 0);
-#endif
-        fileName = valueIterator->second;
+    std::wstring mapTarget;
+    if (GetFileMapTarget(fileName, mapTarget)) {
+        fileName = mapTarget;
     }
 
     return funcCreateFileW(fileName.c_str(), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
@@ -138,6 +144,13 @@ void InitializeHooks() {
     while (std::getline(stringStream, token, ';')) {
         if (key.length() == 0) {
             MakeStringLower(token);
+            char fullFileNameBuffer[600];
+            auto getFullPathNameResult = GetFullPathNameA(token.c_str(), 600, fullFileNameBuffer, nullptr);
+
+            if (getFullPathNameResult != 0) {
+                token = std::string(fullFileNameBuffer);
+            }
+
             key = token;
         } else {
             auto wKey = AnsiToUnicode(key);

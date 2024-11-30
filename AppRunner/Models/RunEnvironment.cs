@@ -23,6 +23,8 @@ namespace AppRunner.Models
 
         public List<ReferenceKeyValuePair<string, string>>? EnvironmentVariables { get; set; } 
 
+        public List<ReferenceKeyValuePair<string, string>>? FileMaps { get; set; }
+
         private void HandleStartException(Exception ex)
         {
             // TODO: show error message
@@ -36,20 +38,31 @@ namespace AppRunner.Models
             return newApp;
         }
 
-        public void Populate(RunEnvironment runApp)
+        public void Populate(RunEnvironment runEnv)
         {
-            runApp.Name = Name;
-            runApp.Description = Description;
-            runApp.WorkingDirectory = WorkingDirectory;
-            runApp.Group = Group;
+            runEnv.Name = Name;
+            runEnv.Description = Description;
+            runEnv.WorkingDirectory = WorkingDirectory;
+            runEnv.Group = Group;
             
             if (EnvironmentVariables is null)
             {
-                runApp.EnvironmentVariables = null;
+                runEnv.EnvironmentVariables = null;
             }
             else
             {
-                runApp.EnvironmentVariables = EnvironmentVariables
+                runEnv.EnvironmentVariables = EnvironmentVariables
+                    .Select(p => p with { })
+                    .ToList();
+            }
+
+            if (FileMaps is null)
+            {
+                runEnv.FileMaps = null;
+            }
+            else
+            {
+                runEnv.FileMaps = FileMaps
                     .Select(p => p with { })
                     .ToList();
             }

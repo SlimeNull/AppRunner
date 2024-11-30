@@ -87,6 +87,7 @@
                                                         <ws:MenuItem.ItemContainerStyle>
                                                             <Style TargetType="ws:MenuItem"
                                                                    BasedOn="{StaticResource {x:Type ws:MenuItem}}">
+                                                                <Setter Property="FontFamily" Value="{StaticResource FontDingDing}"/>
                                                                 <Setter Property="Command" Value="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationWithEnvironmentCommand}"/>
                                                                 <Setter Property="CommandParameter">
                                                                     <Setter.Value>
@@ -163,6 +164,7 @@
                                     </StackPanel>
                                     <ws:TextBox Placeholder="{mk:LocalString Label.DisplayName}"
                                                 PlaceholderBrush="#55000000"
+                                                TextWrapping="Wrap"
                                                 Text="{Binding ViewModel.EditingApplication.Name}"/>
                                 </ws:StackPanel>
 
@@ -173,6 +175,7 @@
                                     </StackPanel>
                                     <ws:TextBox Placeholder="{mk:LocalString Label.FileNameOrPath}"
                                                 PlaceholderBrush="#55000000"
+                                                TextWrapping="Wrap"
                                                 Text="{Binding ViewModel.EditingApplication.FileName}"/>
                                 </ws:StackPanel>
 
@@ -193,6 +196,7 @@
                                     </StackPanel>
                                     <ws:TextBox Placeholder="{mk:LocalString Label.CommandLineArguments}"
                                                 PlaceholderBrush="#55000000"
+                                                TextWrapping="Wrap"
                                                 Text="{Binding ViewModel.EditingApplication.CommandLineArguments}"/>
                                 </ws:StackPanel>
 

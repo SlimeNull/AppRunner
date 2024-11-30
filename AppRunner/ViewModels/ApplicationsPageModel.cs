@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AppRunner.Controls;
+using AppRunner.Helpers;
+using AppRunner.Injection;
 using AppRunner.Models;
 using AppRunner.Resources;
 using AppRunner.Services;
@@ -51,7 +53,8 @@ namespace AppRunner.ViewModels
             MessageUtils.ShowDialogMessage(Strings.Common_Error, ex.Message);
         }
 
-        private void ApplyEnvironementBeforeApplicationStart(
+        private void ApplyEnvironmentBeforeApplicationStart(
+            EnvironmentVariableModifier environmentVariableModifier,
             ProcessStartInfo processStartInfo,
             RunEnvironment? env)
         {
@@ -61,6 +64,7 @@ namespace AppRunner.ViewModels
                 return;
             }
 
+            var fileMapsEnvironmentVariableName = "SlimeNull.AppRunner.FileMaps";
             var workingDirectory = Environment.ExpandEnvironmentVariables(env.WorkingDirectory);
 
             if (!string.IsNullOrWhiteSpace(workingDirectory) && Directory.Exists(workingDirectory))
@@ -86,8 +90,37 @@ namespace AppRunner.ViewModels
                         continue;
                     }
 
-                    Environment.SetEnvironmentVariable(var.Key, var.Value);
+                    environmentVariableModifier.Set(var.Key, var.Value);
                 }
+            }
+
+            if (env.FileMaps is not null)
+            {
+                var fileMapStrings = env.FileMaps
+                    .Where(map => !string.IsNullOrWhiteSpace(map.Key) && !string.IsNullOrWhiteSpace(map.Value))
+                    .Select(map => $"{Environment.ExpandEnvironmentVariables(map.Key!)};{Environment.ExpandEnvironmentVariables(map.Value!)}");
+
+                var environmentVariableValue = string.Join(";", fileMapStrings);
+                environmentVariableModifier.Set(fileMapsEnvironmentVariableName, environmentVariableValue);
+            }
+            else
+            {
+                environmentVariableModifier.Set(fileMapsEnvironmentVariableName, null);
+            }
+        }
+
+        private async Task ApplyEnvironmentAfterApplicationStarted(
+            Process process,
+            RunEnvironment? env)
+        {
+            if (env is null)
+            {
+                return;
+            }
+
+            if (env.FileMaps is not null)
+            {
+                await Injector.InjectFileHookerAndWaitAsync(process);
             }
         }
 
@@ -190,19 +223,21 @@ namespace AppRunner.ViewModels
 
             try
             {
-                ApplyEnvironementBeforeApplicationStart(startInfo, environmentOverride ?? appEnvironemnt);
+                using var environmentVariableModifier = new EnvironmentVariableModifier();
 
+                ApplyEnvironmentBeforeApplicationStart(environmentVariableModifier, startInfo, environmentOverride ?? appEnvironemnt);
                 var process = Process.Start(startInfo);
 
                 if (process is not null)
                 {
-                    // wait for start
+                    await ApplyEnvironmentAfterApplicationStarted(process, environmentOverride ?? appEnvironemnt);
 
+                    // wait for start
                     await Task.Run(() =>
                     {
                         try
                         {
-                            process.WaitForInputIdle();
+                            process.WaitForInputIdle(TimeSpan.FromSeconds(1));
                         }
                         catch { }
                     });

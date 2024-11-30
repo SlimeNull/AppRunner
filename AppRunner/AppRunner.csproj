@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <StartupObject>AppRunner.EntryPoint</StartupObject>
-    <Platforms>AnyCPU;x64;ARM32;ARM64;x86</Platforms>
+    <Platforms>x64;ARM32;ARM64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +16,6 @@
     <PackageReference Include="EleCho.WpfSuite" Version="0.9.10" />
     <PackageReference Include="EleCho.WpfSuite.FluentDesign" Version="0.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-    <PackageReference Include="RustSharp" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +30,17 @@
     <None Remove="Assets\Fonts\DingTalk JinBuTi.ttf" />
     <None Remove="Assets\Fonts\fa-brands-400.ttf" />
     <None Remove="Assets\Fonts\fa-regular-400.ttf" />
+    <None Remove="Hookers\AppRunner.FileHooker.x64.dll" />
+    <None Remove="Hookers\AppRunner.FileHooker.x86.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Hookers\AppRunner.FileHooker.x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Hookers\AppRunner.FileHooker.x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -47,17 +57,7 @@
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Strings.zh-CN.resx">
-      
+
     </EmbeddedResource>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\AppRunner.FileHooker\AppRunner.FileHooker.vcxproj"
-                      ReferenceOutputAssembly="False"/>
-  </ItemGroup>
-
-  <Target Name="CopyDlls" AfterTargets="Build">
-    <Copy SourceFiles="@(CppDllOutputs)" DestinationFolder="$(OutDir)" />
-  </Target>
-
 </Project>

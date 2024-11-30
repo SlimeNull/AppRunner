@@ -231,4 +231,13 @@
   <data name="Common.Select" xml:space="preserve">
     <value>选择</value>
   </data>
+  <data name="Label.FileMaps" xml:space="preserve">
+    <value>文件映射</value>
+  </data>
+  <data name="Placeholder.EnvironmentVariables" xml:space="preserve">
+    <value>名称=值</value>
+  </data>
+  <data name="Placeholder.FileMaps" xml:space="preserve">
+    <value>源文件&gt;目标文件</value>
+  </data>
 </root>
