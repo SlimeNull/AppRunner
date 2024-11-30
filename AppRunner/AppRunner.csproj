@@ -51,4 +51,13 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AppRunner.FileHooker\AppRunner.FileHooker.vcxproj"
+                      ReferenceOutputAssembly="False"/>
+  </ItemGroup>
+
+  <Target Name="CopyDlls" AfterTargets="Build">
+    <Copy SourceFiles="@(CppDllOutputs)" DestinationFolder="$(OutDir)" />
+  </Target>
+
 </Project>
