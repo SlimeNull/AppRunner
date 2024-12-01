@@ -30,11 +30,13 @@
 
     <Grid>
         <ws:ScrollViewer>
-            <Grid Margin="14 14 14 0">
-                <ws:ConditionalControl Condition="{Binding ViewModel.Applications.Count,Converter={StaticResource NumberNotZeroConverter}}">
+            <Grid Margin="14">
+                <ws:ConditionalControl Condition="{Binding ViewModel.Applications.Count,Converter={StaticResource NumberNotZeroConverter}}"
+                                       d:Condition="{ws:Boolean True}">
                     <ws:ConditionalControl.ContentWhenTrue>
                         <StackPanel>
-                            <ItemsControl ItemsSource="{Binding ViewModel.Applications}">
+                            <ItemsControl ItemsSource="{Binding ViewModel.Applications}"
+                                          d:ItemsSource="{d:SampleData ItemCount=10}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <ws:UniformGrid Columns="{Binding RelativeSource={RelativeSource Mode=Self},Path=ActualWidth,Converter={StaticResource DivideBy180Converter}}"

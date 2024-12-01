@@ -243,4 +243,34 @@
   <data name="Placeholder.FileMaps" xml:space="preserve">
     <value>SourceFile&gt;DestinationFile</value>
   </data>
+  <data name="Message.AnErrorOccurredWhilePerformingFileMappingOnTheTargetApplication" xml:space="preserve">
+    <value>An error occurred while performing file mapping on the target application</value>
+  </data>
+  <data name="Label.ApplicationDefaultWorkingDirectory" xml:space="preserve">
+    <value>Application default working directory</value>
+  </data>
+  <data name="Description.ApplicationDefaultWorkingDirectory" xml:space="preserve">
+    <value>Working directory when working directory was not specified or not exist</value>
+  </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>Customize environment variables, file maps, and use them to launch applications on the fly.</value>
+  </data>
+  <data name="Label.Author" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="Label.Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Label.ApplicationInformation" xml:space="preserve">
+    <value>Application Information</value>
+  </data>
+  <data name="Label.ThirdPartyLibraries" xml:space="preserve">
+    <value>Third-party libraries</value>
+  </data>
+  <data name="Label.ViewLicense" xml:space="preserve">
+    <value>View license</value>
+  </data>
+  <data name="Label.License" xml:space="preserve">
+    <value>License</value>
+  </data>
 </root>

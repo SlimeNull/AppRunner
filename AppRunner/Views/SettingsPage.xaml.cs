@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AppRunner.Services;
 
 namespace AppRunner.Views
 {
@@ -20,9 +21,23 @@ namespace AppRunner.Views
     /// </summary>
     public partial class SettingsPage : Page
     {
-        public SettingsPage()
+        public SettingsPage(
+            ConfigurationService configurationService)
         {
+            ConfigurationService = configurationService;
+            DataContext = this;
             InitializeComponent();
+        }
+
+        public ConfigurationService ConfigurationService { get; }
+
+        private async void AnyConfigurationPropertyChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                await ConfigurationService.SaveConfiguration();
+            }
+            catch { }
         }
     }
 }

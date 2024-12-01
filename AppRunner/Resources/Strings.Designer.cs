@@ -61,6 +61,15 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Customize environment variables, file maps, and use them to launch applications on the fly..
+        /// </summary>
+        internal static string AppDescription {
+            get {
+                return ResourceManager.GetString("AppDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AppRunner.
         /// </summary>
         internal static string AppName {
@@ -133,11 +142,47 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Working directory when working directory was not specified or not exist.
+        /// </summary>
+        internal static string Description_ApplicationDefaultWorkingDirectory {
+            get {
+                return ResourceManager.GetString("Description.ApplicationDefaultWorkingDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application default working directory.
+        /// </summary>
+        internal static string Label_ApplicationDefaultWorkingDirectory {
+            get {
+                return ResourceManager.GetString("Label.ApplicationDefaultWorkingDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ApplicationInformation.
+        /// </summary>
+        internal static string Label_ApplicationInformation {
+            get {
+                return ResourceManager.GetString("Label.ApplicationInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Arguments.
         /// </summary>
         internal static string Label_Arguments {
             get {
                 return ResourceManager.GetString("Label.Arguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Author.
+        /// </summary>
+        internal static string Label_Author {
+            get {
+                return ResourceManager.GetString("Label.Author", resourceCulture);
             }
         }
         
@@ -196,6 +241,15 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File maps.
+        /// </summary>
+        internal static string Label_FileMaps {
+            get {
+                return ResourceManager.GetString("Label.FileMaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File name.
         /// </summary>
         internal static string Label_FileName {
@@ -241,11 +295,38 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Third-party libraries.
+        /// </summary>
+        internal static string Label_ThirdPartyLibraries {
+            get {
+                return ResourceManager.GetString("Label.ThirdPartyLibraries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use ShellExecute.
         /// </summary>
         internal static string Label_UseShellExecute {
             get {
                 return ResourceManager.GetString("Label.UseShellExecute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        internal static string Label_Version {
+            get {
+                return ResourceManager.GetString("Label.Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View license.
+        /// </summary>
+        internal static string Label_ViewLicense {
+            get {
+                return ResourceManager.GetString("Label.ViewLicense", resourceCulture);
             }
         }
         
@@ -304,6 +385,15 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred while performing file mapping on the target application.
+        /// </summary>
+        internal static string Message_AnErrorOccurredWhilePerformingFileMappingOnTheTargetApplication {
+            get {
+                return ResourceManager.GetString("Message.AnErrorOccurredWhilePerformingFileMappingOnTheTargetApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to App file name can not be empty.
         /// </summary>
         internal static string Message_AppFileNameCanNotBeEmpty {
@@ -354,6 +444,24 @@ namespace AppRunner.Resources {
         internal static string PageName_Settings {
             get {
                 return ResourceManager.GetString("PageName.Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name=Value.
+        /// </summary>
+        internal static string Placeholder_EnvironmentVariables {
+            get {
+                return ResourceManager.GetString("Placeholder.EnvironmentVariables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SourceFile&gt;DestinationFile.
+        /// </summary>
+        internal static string Placeholder_FileMaps {
+            get {
+                return ResourceManager.GetString("Placeholder.FileMaps", resourceCulture);
             }
         }
         

@@ -28,7 +28,7 @@ namespace AppRunner
             serviceCollection.AddSingleton<ApplicationsPage>();
             serviceCollection.AddSingleton<EnvironmentsPage>();
             serviceCollection.AddSingleton<SettingsPage>();
-            serviceCollection.AddSingleton<AboutPage>();
+            serviceCollection.AddTransient<AboutPage>();
 
             serviceCollection.AddSingleton<ApplicationsPageModel>();
             serviceCollection.AddSingleton<EnvironmentsPageModel>();

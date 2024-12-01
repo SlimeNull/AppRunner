@@ -8,8 +8,11 @@ using System.Windows.Input;
 
 namespace AppRunner.Models
 {
-    public record class AppNavigationItem(string Icon, string Title, Page TargetPage)
+    public record class AppNavigationItem(string Icon, string Title, Type TargetPageType, bool Cache = true)
     {
-        public IList<PageCommand> PageCommands { get; } = new List<PageCommand>();
+        public Func<Page>? PageFactory { get; set; }
+        public Func<Page, IEnumerable<PageCommand>>? PageCommandsFactory { get; set; }
+
+        public override string ToString() => $"AppNavigationItem: {TargetPageType}";
     }
 }

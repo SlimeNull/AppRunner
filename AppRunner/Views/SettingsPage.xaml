@@ -3,12 +3,41 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:ws="https://schemas.elecho.dev/wpfsuite"
       xmlns:local="clr-namespace:AppRunner.Views"
       mc:Ignorable="d" 
+      xmlns:m="clr-namespace:AppRunner.Models"
+      xmlns:mk="clr-namespace:AppRunner.MarkupExtensions"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="SettingsPage">
+      d:Background="#f0f0f0"
+      FontFamily="{StaticResource FontDingDing}"
+      Title="SettingsPage"
+      d:DataContext="{d:DesignInstance Type={x:Type local:SettingsPage}}">
 
     <Grid>
-        
+        <ws:ScrollViewer>
+            <Grid Margin="14">
+                <ws:StackPanel Spacing="8">
+                    <ws:Border Background="White"
+                               CornerRadius="4"
+                               Padding="12">
+                        <ws:FlexPanel MainAlignment="SpaceBetween"
+                                      MainSpacing="12">
+                            <ws:StackPanel Spacing="2">
+                                <TextBlock Text="{mk:LocalString Label.ApplicationDefaultWorkingDirectory}"
+                                           FontSize="14"/>
+                                <TextBlock Text="{mk:LocalString Description.ApplicationDefaultWorkingDirectory}"
+                                       Foreground="#aa000000"
+                                       FontSize="10"/>
+                            </ws:StackPanel>
+                            <ws:ComboBox ItemsSource="{mk:EnumValues Type={x:Type m:DefaultWorkingDirectory}}"
+                                         MinWidth="120"
+                                         SelectedItem="{Binding ConfigurationService.Configuration.DefaultWorkingDirectory}"
+                                         SelectionChanged="AnyConfigurationPropertyChanged"/>
+                        </ws:FlexPanel>
+                    </ws:Border>
+                </ws:StackPanel>
+            </Grid>
+        </ws:ScrollViewer>
     </Grid>
 </Page>

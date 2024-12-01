@@ -120,7 +120,14 @@ namespace AppRunner.ViewModels
 
             if (env.FileMaps is not null)
             {
-                await Injector.InjectFileHookerAndWaitAsync(process);
+                try
+                {
+                    await Injector.InjectFileHookerAndWaitAsync(process);
+                }
+                catch (Exception ex)
+                {
+                    MessageUtils.ShowDialogMessage(Strings.Common_Error, $"{Strings.Message_AnErrorOccurredWhilePerformingFileMappingOnTheTargetApplication}. {ex.Message}");
+                }
             }
         }
 

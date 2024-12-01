@@ -13,4 +13,15 @@
         <Setter Property="CornerRadius" Value="16"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     </Style>
+
+    <Style x:Key="ButtonsStyles.Text"
+           TargetType="ws:Button">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="HoverBackground" Value="#11000000"/>
+        <Setter Property="PressedBackground" Value="#22000000"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
 </ResourceDictionary>

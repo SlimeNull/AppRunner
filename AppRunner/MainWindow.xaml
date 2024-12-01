@@ -50,7 +50,7 @@
                                     Background="Transparent"
                                     Margin="0 14 0 0"
                                     ItemsSource="{Binding AppNavigationItems}"
-                                    SelectedItem="{Binding CurrentNavigationItem}"
+                                    SelectionChanged="NavigatorSelectionChanged"
                                     d:ItemsSource="{d:SampleData ItemCount=4}">
                             <ws:ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -93,7 +93,7 @@
                         BorderBrush="#e7e7e7"
                         Padding="18 4 18 12">
                     <Grid Height="32">
-                        <ws:ContentControl Content="{Binding CurrentNavigationItem.Title}"
+                        <ws:ContentControl Content="{Binding CurrentPageTitle}"
                                         HorizontalAlignment="Left">
                             <ws:ContentControl.ContentTemplate>
                                 <DataTemplate>
@@ -106,7 +106,7 @@
                                 <ws:FadeTransition Duration="0:0:0.300"/>
                             </ws:ContentControl.Transition>
                         </ws:ContentControl>
-                        <ItemsControl ItemsSource="{Binding CurrentNavigationItem.PageCommands}"
+                        <ItemsControl ItemsSource="{Binding CurrentPageCommands}"
                                       HorizontalAlignment="Right">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -130,7 +130,7 @@
                   Grid.Column="1">
                 <ws:Frame x:Name="AppFrame"
                           Background="#f0f0f0"
-                          Content="{Binding CurrentNavigationItem.TargetPage}"
+                          Content="{Binding CurrentPage}"
                           NavigationUIVisibility="Hidden"
                           Navigated="AppFrame_Navigated">
                     <ws:Frame.Transition>
