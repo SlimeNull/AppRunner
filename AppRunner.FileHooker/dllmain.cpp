@@ -11,11 +11,11 @@
 #include "Functions.h"
 
 std::map<std::wstring, std::wstring> appRunnerFileMaps;
-FuncCreateFileA funcCreateFileA;
-FuncCreateFileW funcCreateFileW;
-FuncOpenFile funcOpenFile;
-FuncZwCreateFile funcZwCreateFile;
-FuncZwOpenFile funcZwOpenFile;
+FuncCreateFileA originalCreateFileA;
+FuncCreateFileW originalCreateFileW;
+FuncOpenFile originalOpenFile;
+FuncZwCreateFile originalZwCreateFile;
+FuncZwOpenFile originalZwOpenFile;
 
 std::wstring AnsiToUnicode(const std::string &str) {
     int len = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
@@ -93,7 +93,7 @@ HANDLE HookCreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMo
     }
 
     auto ansiFileName = UnicodeToAnsi(fileName);
-    return funcCreateFileA(ansiFileName.c_str(), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+    return originalCreateFileA(ansiFileName.c_str(), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
 }
 
 HANDLE HookCreateFileW(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
@@ -104,7 +104,7 @@ HANDLE HookCreateFileW(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareM
         fileName = mapTarget;
     }
 
-    return funcCreateFileW(fileName.c_str(), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+    return originalCreateFileW(fileName.c_str(), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
 }
 
 HFILE HookOpenFile(LPCSTR lpFileName, LPOFSTRUCT lpReOpenBuff, UINT uStyle) {
@@ -116,7 +116,7 @@ HFILE HookOpenFile(LPCSTR lpFileName, LPOFSTRUCT lpReOpenBuff, UINT uStyle) {
     }
 
     auto ansiFileName = UnicodeToAnsi(fileName);
-    return funcOpenFile(ansiFileName.c_str(), lpReOpenBuff, uStyle);
+    return originalOpenFile(ansiFileName.c_str(), lpReOpenBuff, uStyle);
 }
 
 NTSTATUS NTAPI HookZwCreateFile(
@@ -143,7 +143,7 @@ NTSTATUS NTAPI HookZwCreateFile(
         ObjectAttributes->ObjectName->MaximumLength = mapTarget.capacity() * 2;
     }
 
-    return funcZwCreateFile(FileHandle, DesiredAccess, ObjectAttributes, IoStatusBlock, AllocationSize, FileAttributes, ShareAccess, CreateDisposition, CreateOptions, EaBuffer, EaLength);
+    return originalZwCreateFile(FileHandle, DesiredAccess, ObjectAttributes, IoStatusBlock, AllocationSize, FileAttributes, ShareAccess, CreateDisposition, CreateOptions, EaBuffer, EaLength);
 }
 
 NTSTATUS NTAPI HookZwOpenFile(
@@ -165,7 +165,7 @@ NTSTATUS NTAPI HookZwOpenFile(
         ObjectAttributes->ObjectName->MaximumLength = mapTarget.capacity() * 2;
     }
 
-    return funcZwOpenFile(FileHandle, DesiredAccess, ObjectAttributes, IoStatusBlock, ShareAccess, OpenOptions);
+    return originalZwOpenFile(FileHandle, DesiredAccess, ObjectAttributes, IoStatusBlock, ShareAccess, OpenOptions);
 }
 
 void InitializeHooks() {
@@ -198,13 +198,13 @@ void InitializeHooks() {
 
     MH_Initialize();
 
-    MH_CreateHook(&CreateFileA, &HookCreateFileA, (void **)&funcCreateFileA);
+    MH_CreateHook(&CreateFileA, &HookCreateFileA, (void **)&originalCreateFileA);
     MH_EnableHook(&CreateFileA);
 
-    MH_CreateHook(&CreateFileW, &HookCreateFileW, (void **)&funcCreateFileW);
+    MH_CreateHook(&CreateFileW, &HookCreateFileW, (void **)&originalCreateFileW);
     MH_EnableHook(&CreateFileW);
 
-    MH_CreateHook(&OpenFile, &HookOpenFile, (void **)&funcOpenFile);
+    MH_CreateHook(&OpenFile, &HookOpenFile, (void **)&originalOpenFile);
     MH_EnableHook(&OpenFile);
 
     auto moduleNtdll = GetModuleHandleA("ntdll.dll");
@@ -214,13 +214,13 @@ void InitializeHooks() {
         auto procZwOpenFile = GetProcAddress(moduleNtdll, "ZwOpenFile");
 
         if (procZwCreateFile != nullptr) {
-            MH_CreateHook(procZwCreateFile, &HookZwCreateFile, (void **)&funcZwCreateFile);
+            MH_CreateHook(procZwCreateFile, &HookZwCreateFile, (void **)&originalZwCreateFile);
             MH_EnableHook(procZwCreateFile);
         }
 
 
         if (procZwOpenFile != nullptr) {
-            MH_CreateHook(procZwOpenFile, &HookZwOpenFile, (void **)&funcZwOpenFile);
+            MH_CreateHook(procZwOpenFile, &HookZwOpenFile, (void **)&originalZwOpenFile);
             MH_EnableHook(procZwOpenFile);
         }
     }
