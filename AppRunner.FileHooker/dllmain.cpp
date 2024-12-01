@@ -181,7 +181,7 @@ void InitializeHooks() {
     auto token = std::string();
     auto key = std::wstring();
 
-    while (std::getline(stringStream, token, ';')) {
+    while (std::getline(stringStream, token, '|')) {
         if (key.length() == 0) {
             auto unicodeToken = AnsiToUnicode(token);
             MakeFileFullPath(unicodeToken);
