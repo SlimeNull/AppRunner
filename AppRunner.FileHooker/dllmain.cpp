@@ -173,12 +173,7 @@ void InitializeHooks() {
     MH_Initialize();
 
     if (procCreateFileA != nullptr) {
-        auto ret = MH_CreateHook(procCreateFileA, &HookCreateFileA, (void **)&funcCreateFileA);
-        if (ret != 0) {
-            MessageBoxW(nullptr, L"CreateFileA Hook Not OK", nullptr, 0);
-            return;
-        }
-
+        MH_CreateHook(procCreateFileA, &HookCreateFileA, (void **)&funcCreateFileA);
         MH_EnableHook(procCreateFileA);
     }
 
