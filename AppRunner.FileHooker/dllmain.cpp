@@ -43,17 +43,17 @@ std::string UnicodeToAnsi(const std::wstring &str) {
 }
 
 void MakeFileFullPath(std::wstring &str) {
-    wchar_t *buffer = (wchar_t *)malloc(600);
+    wchar_t buffer[300];
 
     auto size = GetFullPathNameW(str.c_str(), 300, buffer, nullptr);
-    if (size > 300) {
-        free(buffer);
-        buffer = (wchar_t *)malloc(size * 2);
-        GetFullPathNameW(str.c_str(), size, buffer, nullptr);
+    if (size <= 300) {
+        str = std::wstring(buffer);
+        return;
     }
 
-    str = std::wstring(buffer);
-    free(buffer);
+    auto bufferOnHeap = new wchar_t[size];
+    GetFullPathNameW(str.c_str(), size, bufferOnHeap, nullptr);
+    delete[] bufferOnHeap;
 }
 
 void MakeStringLower(std::wstring &str) {
