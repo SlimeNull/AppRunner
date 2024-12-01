@@ -12,6 +12,7 @@
         MinHeight="550" MinWidth="800"
         Height="550" Width="800"
         ws:WindowOption.IsCaptionMenuVisible="False"
+        ws:Mouse.WheelSupport="True"
         d:DataContext="{d:DesignInstance Type=local:MainWindow}"
         FontFamily="{StaticResource FontDingDing}">
     <WindowChrome.WindowChrome>
