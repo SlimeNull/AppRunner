@@ -133,7 +133,7 @@
   <ItemGroup>
     <ClInclude Include="api.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Functions.h" />
+    <ClInclude Include="functions.h" />
     <ClInclude Include="nt.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

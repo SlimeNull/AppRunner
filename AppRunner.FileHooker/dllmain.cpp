@@ -11,7 +11,10 @@
 #include "Functions.h"
 #include "api.h"
 
+HMODULE hSelfModule;
 std::map<std::wstring, std::wstring> appRunnerFileMaps;
+FuncCreateProcessW originalCreateProcessW;
+FuncCreateProcessA originalCreateProcessA;
 FuncCreateFileA originalCreateFileA;
 FuncCreateFileW originalCreateFileW;
 FuncOpenFile originalOpenFile;
@@ -85,6 +88,97 @@ bool GetFileMapTarget(const std::wstring &from, std::wstring &target) {
     return false;
 }
 
+bool InjectSelf(HMODULE hModule, HANDLE hProcess) {
+    if (hModule == nullptr) {
+        return false;
+    }
+
+    auto selfName = GetModuleFileNameString(hModule);
+
+    auto remoteMemorySize = selfName.length() * 2 + 2;
+    auto remoteAddress = VirtualAllocEx(hProcess, nullptr, remoteMemorySize, MEM_COMMIT, PAGE_READWRITE);
+    if (remoteAddress == nullptr) {
+        return false;
+    }
+
+    SIZE_T bytesWriten;
+    auto writeProcessMemoryResult = WriteProcessMemory(hProcess, remoteAddress, selfName.c_str(), remoteMemorySize, &bytesWriten);
+    if (!writeProcessMemoryResult ||
+        bytesWriten == 0) {
+        return false;
+    }
+
+    auto procAddress = (LPTHREAD_START_ROUTINE)&LoadLibraryW;
+    DWORD threadId;
+    auto remoteThread = CreateRemoteThread(
+        hProcess,
+        0,
+        0,
+        procAddress,
+        remoteAddress,
+        0,
+        &threadId);
+
+    if (remoteThread == nullptr) {
+        VirtualFreeEx(hProcess, remoteAddress, 0, MEM_RELEASE);
+        return false;
+    }
+
+    WaitForSingleObject(remoteThread, 100);
+    CloseHandle(remoteThread);
+    VirtualFreeEx(hProcess, remoteAddress, 0, MEM_RELEASE);
+
+    return true;
+}
+
+BOOL HookCreateProcessW(
+    _In_opt_ LPCWSTR lpApplicationName,
+    _Inout_opt_ LPWSTR lpCommandLine,
+    _In_opt_ LPSECURITY_ATTRIBUTES lpProcessAttributes,
+    _In_opt_ LPSECURITY_ATTRIBUTES lpThreadAttributes,
+    _In_ BOOL bInheritHandles,
+    _In_ DWORD dwCreationFlags,
+    _In_opt_ LPVOID lpEnvironment,
+    _In_opt_ LPCWSTR lpCurrentDirectory,
+    _In_ LPSTARTUPINFOW lpStartupInfo,
+    _Out_ LPPROCESS_INFORMATION lpProcessInformation
+) {
+    PROCESS_INFORMATION processInfomation;
+
+    auto result = originalCreateProcessW(lpApplicationName, lpCommandLine, lpProcessAttributes, lpThreadAttributes, bInheritHandles, dwCreationFlags, lpEnvironment, lpCurrentDirectory, lpStartupInfo, &processInfomation);
+    InjectSelf(hSelfModule, processInfomation.hProcess);
+
+    if (lpProcessInformation != nullptr) {
+        memcpy(lpProcessInformation, &processInfomation, sizeof(PROCESS_INFORMATION));
+    }
+
+    return result;
+}
+
+BOOL HookCreateProcessA(
+    _In_opt_ LPCSTR lpApplicationName,
+    _Inout_opt_ LPSTR lpCommandLine,
+    _In_opt_ LPSECURITY_ATTRIBUTES lpProcessAttributes,
+    _In_opt_ LPSECURITY_ATTRIBUTES lpThreadAttributes,
+    _In_ BOOL bInheritHandles,
+    _In_ DWORD dwCreationFlags,
+    _In_opt_ LPVOID lpEnvironment,
+    _In_opt_ LPCSTR lpCurrentDirectory,
+    _In_ LPSTARTUPINFOA lpStartupInfo,
+    _Out_ LPPROCESS_INFORMATION lpProcessInformation
+) {
+    PROCESS_INFORMATION processInfomation;
+
+    auto result = originalCreateProcessA(lpApplicationName, lpCommandLine, lpProcessAttributes, lpThreadAttributes, bInheritHandles, dwCreationFlags, lpEnvironment, lpCurrentDirectory, lpStartupInfo, &processInfomation);
+    InjectSelf(hSelfModule, processInfomation.hProcess);
+
+    if (lpProcessInformation != nullptr) {
+        memcpy(lpProcessInformation, &processInfomation, sizeof(PROCESS_INFORMATION));
+    }
+
+    return result;
+}
+
 HANDLE HookCreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
     auto fileName = AnsiToUnicode(std::string(lpFileName));
 
@@ -147,49 +241,6 @@ NTSTATUS NTAPI HookZwCreateFile(
     return originalZwCreateFile(FileHandle, DesiredAccess, ObjectAttributes, IoStatusBlock, AllocationSize, FileAttributes, ShareAccess, CreateDisposition, CreateOptions, EaBuffer, EaLength);
 }
 
-bool InjectSelf(HMODULE hModule, HANDLE hProcess) {
-    auto selfName = GetModuleFileNameString(hModule);
-
-    auto remoteAddress = VirtualAllocEx(hProcess, nullptr, selfName.size(), MEM_COMMIT, PAGE_READWRITE);
-    if (remoteAddress == nullptr) {
-        return false;
-    }
-
-    SIZE_T bytesWriten;
-    auto writeProcessMemoryResult = WriteProcessMemory(hProcess, remoteAddress, selfName.c_str(), selfName.size(), &bytesWriten);
-    if (!writeProcessMemoryResult ||
-        bytesWriten == 0) {
-        return false;
-    }
-
-    auto procAddress = (LPTHREAD_START_ROUTINE)&LoadLibraryW;
-    DWORD threadId;
-    auto remoteThread = CreateRemoteThread(
-        hProcess,
-        0,
-        0,
-        procAddress,
-        remoteAddress,
-        0,
-        &threadId);
-
-    if (remoteThread == nullptr) {
-        VirtualFreeEx(hProcess, remoteAddress, selfName.size(), MEM_RELEASE);
-        return false;
-    }
-
-    WaitForSingleObject(remoteThread, 100);
-    CloseHandle(remoteThread);
-    VirtualFreeEx(hProcess, remoteAddress, selfName.size(), MEM_RELEASE);
-
-    return true;
-}
-
-void InitializeHooks(HMODULE hModule) {
-#if _DEBUG
-    MessageBoxW(nullptr, L"Initailizing FileHooker", nullptr, 0);
-#endif
-    auto appRunnerFileMapsPtr = getenv("SlimeNull.AppRunner.FileMaps");
 NTSTATUS NTAPI HookZwOpenFile(
     _Out_ PHANDLE FileHandle,
     _In_ ACCESS_MASK DesiredAccess,
@@ -212,7 +263,8 @@ NTSTATUS NTAPI HookZwOpenFile(
     return originalZwOpenFile(FileHandle, DesiredAccess, ObjectAttributes, IoStatusBlock, ShareAccess, OpenOptions);
 }
 
-void InitializeHooks() {
+void InitializeHooks(HMODULE hModule) {
+    hSelfModule = hModule;
     auto appRunnerFileMapsPtr = getenv("SlimeNull.AppRunner.FileMaps");
 
     if (appRunnerFileMapsPtr == nullptr) {
@@ -232,8 +284,7 @@ void InitializeHooks() {
             MakeStringLower(unicodeToken);
 
             key = unicodeToken;
-        }
-        else {
+        } else {
             auto wValue = AnsiToUnicode(token);
             appRunnerFileMaps[key] = wValue;
             key = std::wstring();
@@ -241,6 +292,12 @@ void InitializeHooks() {
     }
 
     MH_Initialize();
+
+    MH_CreateHook(&CreateProcessW, &HookCreateProcessW, (void **)&originalCreateProcessW);
+    MH_EnableHook(&CreateProcessW);
+
+    MH_CreateHook(&CreateProcessA, &HookCreateProcessA, (void **)&originalCreateProcessA);
+    MH_EnableHook(&CreateProcessA);
 
     MH_CreateHook(&CreateFileA, &HookCreateFileA, (void **)&originalCreateFileA);
     MH_EnableHook(&CreateFileA);
@@ -276,15 +333,15 @@ BOOL APIENTRY DllMain(
     LPVOID lpReserved
 ) {
     switch (ul_reason_for_call) {
-    case DLL_PROCESS_ATTACH:
-        InitializeHooks();
-        break;
-    case DLL_THREAD_ATTACH:
-        break;
-    case DLL_THREAD_DETACH:
-        break;
-    case DLL_PROCESS_DETACH:
-        break;
+        case DLL_PROCESS_ATTACH:
+            InitializeHooks(hModule);
+            break;
+        case DLL_THREAD_ATTACH:
+            break;
+        case DLL_THREAD_DETACH:
+            break;
+        case DLL_PROCESS_DETACH:
+            break;
     }
     return TRUE;
 }

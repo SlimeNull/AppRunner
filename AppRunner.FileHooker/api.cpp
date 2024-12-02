@@ -1,13 +1,17 @@
 #include "api.h"
 
 std::wstring GetModuleFileNameString(HMODULE hModule) {
+    wchar_t buffer[260];
+    auto requiredSize = GetModuleFileNameW(hModule, buffer, 260);
+    if (requiredSize < 260) {
+        return std::wstring(buffer);
+    }
 
-    auto requiredSize = GetModuleFileNameW(hModule, nullptr, 0);
-    wchar_t *buffer = new wchar_t[requiredSize];
-    GetModuleFileNameW(hModule, buffer, requiredSize);
+    wchar_t *bufferOnHeap = new wchar_t[requiredSize];
+    GetModuleFileNameW(hModule, bufferOnHeap, requiredSize);
 
-    std::wstring result = std::wstring(buffer);
-    delete[] buffer;
+    std::wstring result = std::wstring(bufferOnHeap);
+    delete[] bufferOnHeap;
 
     return result;
 }
