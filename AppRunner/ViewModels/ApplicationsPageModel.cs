@@ -98,9 +98,9 @@ namespace AppRunner.ViewModels
             {
                 var fileMapStrings = env.FileMaps
                     .Where(map => !string.IsNullOrWhiteSpace(map.Key) && !string.IsNullOrWhiteSpace(map.Value))
-                    .Select(map => $"{Environment.ExpandEnvironmentVariables(map.Key!)};{Environment.ExpandEnvironmentVariables(map.Value!)}");
+                    .Select(map => $"{Environment.ExpandEnvironmentVariables(map.Key!)}|{Environment.ExpandEnvironmentVariables(map.Value!)}");
 
-                var environmentVariableValue = string.Join(";", fileMapStrings);
+                var environmentVariableValue = string.Join('|', fileMapStrings);
                 environmentVariableModifier.Set(fileMapsEnvironmentVariableName, environmentVariableValue);
             }
             else
