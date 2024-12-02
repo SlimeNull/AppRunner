@@ -8,7 +8,7 @@
 #include <sstream>
 #include <Windows.h>
 #include <MinHook.h>
-
+#include "api.h"
 
 typedef HANDLE(*FuncCreateFileA)(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
 typedef HANDLE(*FuncCreateFileW)(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
@@ -118,7 +118,45 @@ HFILE HookOpenFile(LPCSTR lpFileName, LPOFSTRUCT lpReOpenBuff, UINT uStyle) {
     return 0;
 }
 
-void InitializeHooks() {
+bool InjectSelf(HMODULE hModule, HANDLE hProcess) {
+    auto selfName = GetModuleFileNameString(hModule);
+
+    auto remoteAddress = VirtualAllocEx(hProcess, nullptr, selfName.size(), MEM_COMMIT, PAGE_READWRITE);
+    if (remoteAddress == nullptr) {
+        return false;
+    }
+
+    SIZE_T bytesWriten;
+    auto writeProcessMemoryResult = WriteProcessMemory(hProcess, remoteAddress, selfName.c_str(), selfName.size(), &bytesWriten);
+    if (!writeProcessMemoryResult ||
+        bytesWriten == 0) {
+        return false;
+    }
+
+    auto procAddress = (LPTHREAD_START_ROUTINE)&LoadLibraryW;
+    DWORD threadId;
+    auto remoteThread = CreateRemoteThread(
+        hProcess,
+        0,
+        0,
+        procAddress,
+        remoteAddress,
+        0,
+        &threadId);
+
+    if (remoteThread == nullptr) {
+        VirtualFreeEx(hProcess, remoteAddress, selfName.size(), MEM_RELEASE);
+        return false;
+    }
+
+    WaitForSingleObject(remoteThread, 100);
+    CloseHandle(remoteThread);
+    VirtualFreeEx(hProcess, remoteAddress, selfName.size(), MEM_RELEASE);
+
+    return true;
+}
+
+void InitializeHooks(HMODULE hModule) {
 #if _DEBUG
     MessageBoxW(nullptr, L"Initailizing FileHooker", nullptr, 0);
 #endif
