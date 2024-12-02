@@ -13,7 +13,8 @@ namespace AppRunner.MarkupExtensions
     {
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return Package.Current.Id.Version.ToString() ?? "1.0.0.0";
+            var v = Package.Current.Id.Version;
+            return $"{v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
         }
     }
 }
