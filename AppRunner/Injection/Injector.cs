@@ -13,32 +13,10 @@ namespace AppRunner.Injection
 {
     public class Injector
     {
-        public static async Task<bool> InjectFileHookerAndWaitAsync(Process process)
-        {
-            var processInfo = new ProcessInfo(process);
-
-            string rootDirectory = AppContext.BaseDirectory;
-            string fileHookerPath = $"Hookers/AppRunner.FileHooker.{processInfo.Architecture}.dll";
-            string fileHookerFullPath = Path.Combine(rootDirectory, fileHookerPath);
-
-            if (!File.Exists(fileHookerFullPath))
-            {
-                return false;
-            }
-
-            var procAddress = default(IntPtr);
-            await Task.Run(() =>
-            {
-                procAddress = LoadLibraryInForeignProcess(processInfo, fileHookerFullPath);
-            });
-
-            return procAddress != IntPtr.Zero;
-        }
-
         /// <summary>
         /// Loads a library into a foreign process and returns the module handle of the loaded library.
         /// </summary>
-        private static IntPtr LoadLibraryInForeignProcess(ProcessInfo processWrapper, string pathToDll)
+        public static IntPtr LoadLibraryInForeignProcess(ProcessInfo processWrapper, string pathToDll)
         {
             if (File.Exists(pathToDll) == false)
             {

@@ -36,6 +36,7 @@ namespace AppRunner
             serviceCollection.AddSingleton<AboutPageModel>();
 
             serviceCollection.AddSingleton<ConfigurationService>();
+            serviceCollection.AddSingleton<InjectionService>();
 
 
             return serviceCollection.BuildServiceProvider();

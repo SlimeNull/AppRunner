@@ -23,6 +23,7 @@ namespace AppRunner.ViewModels
     public partial class ApplicationsPageModel : ObservableObject
     {
         private readonly ConfigurationService _configurationService;
+        private readonly InjectionService _injectionService;
         private RunApp? _editingApplicationToPopulate;
 
         [ObservableProperty]
@@ -42,9 +43,12 @@ namespace AppRunner.ViewModels
 
         public ObservableCollection<RunApp> Applications { get; } = new();
 
-        public ApplicationsPageModel(ConfigurationService configurationService)
+        public ApplicationsPageModel(
+            ConfigurationService configurationService,
+            InjectionService injectionService)
         {
             this._configurationService = configurationService;
+            this._injectionService = injectionService;
         }
 
 
@@ -122,7 +126,7 @@ namespace AppRunner.ViewModels
             {
                 try
                 {
-                    await Injector.InjectFileHookerAndWaitAsync(process);
+                    await _injectionService.InjectFileHookerAndWaitAsync(process);
                 }
                 catch (Exception ex)
                 {

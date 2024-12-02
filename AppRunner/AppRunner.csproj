@@ -35,12 +35,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Hookers\AppRunner.FileHooker.x64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Hookers\AppRunner.FileHooker.x86.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="Hookers\AppRunner.FileHooker.x64.dll" />
+    <EmbeddedResource Include="Hookers\AppRunner.FileHooker.x86.dll" />
   </ItemGroup>
 
   <ItemGroup>

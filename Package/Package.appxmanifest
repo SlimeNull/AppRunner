@@ -10,7 +10,7 @@
   <Identity
     Name="SlimeNull.AppRunner"
     Publisher="CN=SlimeNull"
-    Version="1.0.3.0" />
+    Version="1.0.5.0" />
 
   <Properties>
     <DisplayName>AppRunner</DisplayName>
