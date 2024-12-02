@@ -11,6 +11,7 @@
         Title="MainWindow"
         MinHeight="550" MinWidth="800"
         Height="550" Width="800"
+        Icon="Assets/Images/WindowIcon.png"
         ws:WindowOption.IsCaptionMenuVisible="False"
         ws:Mouse.WheelSupport="True"
         d:DataContext="{d:DesignInstance Type=local:MainWindow}"

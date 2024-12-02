@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <StartupObject>AppRunner.EntryPoint</StartupObject>
     <Platforms>x64;ARM32;ARM64;x86</Platforms>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +33,10 @@
     <None Remove="Assets\Fonts\fa-regular-400.ttf" />
     <None Remove="Hookers\AppRunner.FileHooker.x64.dll" />
     <None Remove="Hookers\AppRunner.FileHooker.x86.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
