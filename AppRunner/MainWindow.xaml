@@ -52,6 +52,7 @@
                                     Background="Transparent"
                                     Margin="0 14 0 0"
                                     ItemsSource="{Binding AppNavigationItems}"
+                                    SelectedIndex="0"
                                     SelectionChanged="NavigatorSelectionChanged"
                                     d:ItemsSource="{d:SampleData ItemCount=4}">
                             <ws:ListBox.ItemsPanel>

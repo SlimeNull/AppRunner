@@ -89,7 +89,6 @@ namespace AppRunner
 
         public MainWindow()
         {
-            UpdatePage(AppNavigationItems[0]);
             DataContext = this;
             InitializeComponent();
         }
