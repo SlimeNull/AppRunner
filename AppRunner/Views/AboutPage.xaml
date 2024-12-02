@@ -83,9 +83,9 @@
                                                     Margin="4 0 0 0"
                                                     VerticalSpacing="4">
                                         <TextBlock Text="SlimeNull"/>
-                                        <TextBlock Text="{mk:AssemblyVersionText}"/>
+                                        <TextBlock Text="{mk:AppVersionText}"/>
                                         <ws:Button Style="{StaticResource ButtonsStyles.Text}"
-                                                   HorizontalContentAlignment="Left"
+                                                   HorizontalAlignment="Left"
                                                    Content="MIT"
                                                    Command="{Binding ViewLicenseCommand}"
                                                    CommandParameter="{mk:LicenseText Self}"/>
@@ -99,7 +99,8 @@
                             <ws:StackPanel Margin="0 24 0 0">
                                 <TextBlock Text="{mk:LocalString Label.ThirdPartyLibraries}"
                                            FontSize="16"/>
-                                <StackPanel Margin="8">
+                                <ws:StackPanel Margin="8"
+                                               Spacing="4">
                                     <ws:WrapPanel>
                                         <ws:Button Content="MinHook"
                                                    Style="{StaticResource ButtonsStyles.Text}"
@@ -118,7 +119,25 @@
                                                    Command="{Binding ViewLicenseCommand}"
                                                    CommandParameter="{mk:LicenseText MinHook}"/>
                                     </ws:WrapPanel>
-                                </StackPanel>
+                                    <ws:WrapPanel>
+                                        <ws:Button Content="CommandLineParser"
+                                                   Style="{StaticResource ButtonsStyles.Text}"
+                                                   Command="{Binding OpenUrlCommand}"
+                                                   CommandParameter="https://github.com/commandlineparser/commandline"/>
+                                        <TextBlock Text="by"
+                                                   Margin="4 0"/>
+                                        <ws:Button Content="Giacomo Stelluti Scala &amp; Contributors"
+                                                   Style="{StaticResource ButtonsStyles.Text}"
+                                                   Command="{Binding OpenUrlCommand}"
+                                                   CommandParameter="https://github.com/commandlineparser"/>
+                                        <TextBlock Text=","
+                                                   Margin="0 0 4 0"/>
+                                        <ws:Button Content="{mk:LocalString Label.ViewLicense}"
+                                                   Style="{StaticResource ButtonsStyles.Text}"
+                                                   Command="{Binding ViewLicenseCommand}"
+                                                   CommandParameter="{mk:LicenseText CommandLineParser}"/>
+                                    </ws:WrapPanel>
+                                </ws:StackPanel>
                             </ws:StackPanel>
                         </ws:ContentControl>
                     </ws:StackPanel>
@@ -126,7 +145,8 @@
             </Grid>
         </ws:ScrollViewer>
 
-        <ws:Dialog IsOpen="{Binding IsLicenseDialogOpen}">
+        <ws:Dialog IsOpen="{Binding IsLicenseDialogOpen}"
+                   d:Visibility="Collapsed">
             <ws:Border Background="#ffffff"
                        MinWidth="320"
                        CornerRadius="8">
