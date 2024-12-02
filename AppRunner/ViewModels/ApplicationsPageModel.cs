@@ -102,7 +102,7 @@ namespace AppRunner.ViewModels
             {
                 var fileMapStrings = env.FileMaps
                     .Where(map => !string.IsNullOrWhiteSpace(map.Key) && !string.IsNullOrWhiteSpace(map.Value))
-                    .Select(map => $"{Environment.ExpandEnvironmentVariables(map.Key!)}|{Environment.ExpandEnvironmentVariables(map.Value!)}");
+                    .Select(map => $"{Environment.ExpandEnvironmentVariables(map.Key!).Trim('"')}|{Environment.ExpandEnvironmentVariables(map.Value!).Trim('"')}");
 
                 var environmentVariableValue = string.Join('|', fileMapStrings);
                 environmentVariableModifier.Set(fileMapsEnvironmentVariableName, environmentVariableValue);
