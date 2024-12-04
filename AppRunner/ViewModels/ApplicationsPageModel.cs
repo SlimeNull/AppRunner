@@ -64,7 +64,14 @@ namespace AppRunner.ViewModels
         {
             if (env is null)
             {
-                // do nothing
+                // 默认工作目录
+                processStartInfo.WorkingDirectory = _configurationService.Configuration.DefaultWorkingDirectory switch
+                {
+                    DefaultWorkingDirectory.WorkingDirectoryOfCurrentApp => Environment.CurrentDirectory,
+                    DefaultWorkingDirectory.UserProfile => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    _ => string.Empty
+                };
+
                 return;
             }
 
