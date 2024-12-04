@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -12,7 +12,7 @@
 #include "api.h"
 
 HMODULE hSelfModule;
-std::map<std::wstring, std::wstring> appRunnerFileMaps;
+std::unordered_map<std::wstring, std::wstring> appRunnerFileMaps;
 FuncCreateProcessW originalCreateProcessW;
 FuncCreateProcessA originalCreateProcessA;
 FuncCreateFileA originalCreateFileA;
@@ -61,22 +61,23 @@ void MakeFileFullPath(std::wstring &str) {
 }
 
 void MakeStringLower(std::wstring &str) {
-    for (size_t i = 0; i < str.length(); i++) {
-        str[i] = std::tolower(str[i]);
+    for (auto& c : str) {
+        c = std::tolower(c);
     }
 }
 
-void TrimStart(std::wstring &str, const std::wstring &prefix) {
-    if (str.find(prefix, 0) == 0) {
-        str = str.substr(prefix.length(), str.length() - prefix.length());
+void MakeStandardPath(std::wstring &str) {
+    if (str.starts_with(LR"(\\?\)")) {
+        str = str.substr(4);
+    }
+    else if (str.starts_with(LR"(\??\)")) {
+        str = str.substr(4);
     }
 }
 
 bool GetFileMapTarget(const std::wstring &from, std::wstring &target) {
     auto key = from;
-    TrimStart(key, std::wstring(LR"(\\?\)"));
-    TrimStart(key, std::wstring(LR"(\??\)"));
-    MakeFileFullPath(key);
+    MakeStandardPath(key);
     MakeStringLower(key);
 
     auto iterator = appRunnerFileMaps.find(key);
@@ -86,6 +87,23 @@ bool GetFileMapTarget(const std::wstring &from, std::wstring &target) {
     }
 
     return false;
+}
+
+std::wstring GetFullPath(HANDLE fileHandle) { // 返回\\?\XXX
+    WCHAR buffer[300];
+    DWORD len = GetFinalPathNameByHandleW(fileHandle, buffer, 300, FILE_NAME_NORMALIZED);
+    if (len == 0) {
+        return L"";
+    }
+    else if (len <= 300)
+    {
+        return std::wstring(buffer, len);
+    }
+    else {
+        auto path = std::wstring(123, '\0');
+        len = GetFinalPathNameByHandleW(fileHandle, (LPWSTR)path.c_str(), len, FILE_NAME_NORMALIZED);
+        return path;
+    }
 }
 
 bool InjectSelf(HMODULE hModule, HANDLE hProcess) {
@@ -228,6 +246,14 @@ NTSTATUS NTAPI HookZwCreateFile(
     _In_ ULONG EaLength
 ) {
     auto fileName = std::wstring(ObjectAttributes->ObjectName->Buffer, ObjectAttributes->ObjectName->Length / 2);
+
+    if (ObjectAttributes->RootDirectory != nullptr)
+    {
+        auto target = GetFullPath(ObjectAttributes->RootDirectory);
+        if (target != L"") {
+            fileName = target + fileName;
+        }
+    }
 
     std::wstring mapTarget;
     if (GetFileMapTarget(fileName, mapTarget)) {

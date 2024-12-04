@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CopyFileHooker">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -26,22 +26,9 @@
   <ItemGroup>
     <Resource Include="Assets\**\*.*" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Assets\Fonts\DingTalk JinBuTi.ttf" />
-    <None Remove="Assets\Fonts\fa-brands-400.ttf" />
-    <None Remove="Assets\Fonts\fa-regular-400.ttf" />
-    <None Remove="Hookers\AppRunner.FileHooker.x64.dll" />
-    <None Remove="Hookers\AppRunner.FileHooker.x86.dll" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <Content Include="Icon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Hookers\AppRunner.FileHooker.x64.dll" />
-    <EmbeddedResource Include="Hookers\AppRunner.FileHooker.x86.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -70,4 +57,15 @@
 
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Hookers\AppRunner.FileHooker.x64.dll" />
+    <EmbeddedResource Include="Hookers\AppRunner.FileHooker.x86.dll" />
+  </ItemGroup>
+  <Target Name="CopyFileHooker">
+    <MSBuild Projects="..\AppRunner.FileHooker\AppRunner.FileHooker.vcxproj" Properties="Platform=x86" />
+    <MSBuild Projects="..\AppRunner.FileHooker\AppRunner.FileHooker.vcxproj" Properties="Platform=x64" />
+    <Copy SourceFiles="..\x64\$(Configuration)\AppRunner.FileHooker.dll" DestinationFiles="Hookers\AppRunner.FileHooker.x64.dll" />
+    <Copy SourceFiles="..\x86\$(Configuration)\AppRunner.FileHooker.dll" DestinationFiles="Hookers\AppRunner.FileHooker.x86.dll" />
+  </Target>
 </Project>
