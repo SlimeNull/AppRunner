@@ -7,6 +7,7 @@
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:local="clr-namespace:AppRunner.Views"
       xmlns:mk="clr-namespace:AppRunner.MarkupExtensions"
+      xmlns:m="clr-namespace:AppRunner.Models"
       xmlns:cvt="clr-namespace:AppRunner.Converters"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
@@ -19,6 +20,8 @@
                          Data="{Binding ViewModel}"/>
         <ws:BindingProxy x:Key="ConfigurationProxy"
                          Data="{Binding ConfigurationService.Configuration}"/>
+        <ws:BindingProxy x:Key="EnvironmentsProxy"
+                         Data="{Binding ConfigurationService.Configuration.Environments}"/>
         <ws:NumberCompareConverter x:Key="NumberNotZeroConverter"
                                    Comparison="NotEqual"
                                    TargetValue="0"/>
@@ -208,8 +211,13 @@
                                         <TextBlock Text="{mk:LocalString Label.Environment}"/>
                                         <TextBlock Text=":"/>
                                     </StackPanel>
-                                    <ws:ComboBox ItemsSource="{Binding ConfigurationService.Configuration.Environments}"
-                                                 SelectedItem="{Binding ViewModel.EditingApplication.EnvironmentGuid,Converter={x:Static cvt:GuidToEnvironmentConverter.Instance},Mode=TwoWay}">
+                                    <ws:ComboBox SelectedItem="{Binding ViewModel.EditingApplication.EnvironmentGuid,Converter={x:Static cvt:GuidToEnvironmentConverter.Instance},Mode=TwoWay}">
+                                        <ws:ComboBox.ItemsSource>
+                                            <CompositeCollection>
+                                                <mk:EmptyEnvironment/>
+                                                <CollectionContainer Collection="{Binding Source={StaticResource EnvironmentsProxy},Path=Data}"/>
+                                            </CompositeCollection>
+                                        </ws:ComboBox.ItemsSource>
                                         <ws:ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Name}"/>
@@ -262,6 +270,6 @@
                 </DockPanel>
             </Border>
         </ws:Dialog>
-        
+
     </Grid>
 </Page>

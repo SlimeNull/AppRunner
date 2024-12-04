@@ -31,7 +31,7 @@ namespace AppRunner.MarkupExtensions
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
-                return null;
+                return Name;
             }
 
             return Resources.Strings.ResourceManager.GetObject(Name) as string;

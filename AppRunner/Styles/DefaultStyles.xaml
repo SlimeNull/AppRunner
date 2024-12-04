@@ -41,6 +41,7 @@
         <Setter Property="HoverSelectedBackground" Value="#f0f0f0"/>
         <Setter Property="SelectedBackground" Value="#f8f8f8"/>
         <Setter Property="SelectedFocusedBackground" Value="#f8f8f8"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     </Style>
 
     <Style TargetType="ws:TextBox">

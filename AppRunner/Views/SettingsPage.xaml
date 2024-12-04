@@ -22,7 +22,30 @@
                                CornerRadius="4"
                                Padding="12">
                         <ws:FlexPanel MainAlignment="SpaceBetween"
-                                      MainSpacing="12">
+                                      MainSpacing="12"
+                                      ItemsAlignment="Center">
+                            <ws:StackPanel Spacing="2">
+                                <TextBlock Text="{mk:LocalString Label.Configuration}"
+                                           FontSize="14"/>
+                                <TextBlock Text="{mk:LocalString Description.Configuration}"
+                                       Foreground="#aa000000"
+                                       FontSize="10"/>
+                            </ws:StackPanel>
+                            <ws:StackPanel Orientation="Horizontal"
+                                           Spacing="4">
+                                <ws:Button Content="{mk:LocalString Button.Import}"
+                                           Click="ImportConfigurationButtonClick"/>
+                                <ws:Button Content="{mk:LocalString Button.Export}"
+                                           Click="ExportConfigurationButtonClick"/>
+                            </ws:StackPanel>
+                        </ws:FlexPanel>
+                    </ws:Border>
+                    <ws:Border Background="White"
+                               CornerRadius="4"
+                               Padding="12">
+                        <ws:FlexPanel MainAlignment="SpaceBetween"
+                                      MainSpacing="12"
+                                      ItemsAlignment="Center">
                             <ws:StackPanel Spacing="2">
                                 <TextBlock Text="{mk:LocalString Label.ApplicationDefaultWorkingDirectory}"
                                            FontSize="14"/>

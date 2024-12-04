@@ -270,4 +270,31 @@
   <data name="Label.License" xml:space="preserve">
     <value>许可证</value>
   </data>
+  <data name="Common.None" xml:space="preserve">
+    <value>空</value>
+  </data>
+  <data name="Label.Configuration" xml:space="preserve">
+    <value>配置</value>
+  </data>
+  <data name="Description.Configuration" xml:space="preserve">
+    <value>导入或导出配置</value>
+  </data>
+  <data name="Button.Import" xml:space="preserve">
+    <value>导入</value>
+  </data>
+  <data name="Button.Export" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="Title.ImportConfiguration" xml:space="preserve">
+    <value>导入配置</value>
+  </data>
+  <data name="Title.ExportConfiguration" xml:space="preserve">
+    <value>导出配置</value>
+  </data>
+  <data name="Message.FailedToImportConfigurationPleaseCheckIfTheFileFormatIsCorrect" xml:space="preserve">
+    <value>导入配置失败, 请检查文件格式是否正确</value>
+  </data>
+  <data name="Message.FailedToExportConfigurationPleaseCheckIfYouCurrentlyHaveAccessRightsToTargetPath" xml:space="preserve">
+    <value>导出配置失败, 请检查您当前是否拥有目标路径的访问权限</value>
+  </data>
 </root>

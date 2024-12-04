@@ -22,6 +22,11 @@ namespace AppRunner.Converters
 
         public override RunEnvironment? Convert(Guid value, Type targetType, object? parameter, CultureInfo culture)
         {
+            if (value == default(Guid))
+            {
+                return RunEnvironment.Empty;
+            }
+
             return _configurationService.Configuration.Environments?.FirstOrDefault(e => e.Guid == value);
         }
 
