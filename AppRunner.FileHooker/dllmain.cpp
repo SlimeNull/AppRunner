@@ -231,8 +231,10 @@ NTSTATUS NTAPI HookZwCreateFile(
 
     std::wstring mapTarget;
     if (GetFileMapTarget(fileName, mapTarget)) {
+        MakeFileFullPath(mapTarget);
         mapTarget = LR"(\??\)" + mapTarget;
 
+        ObjectAttributes->RootDirectory = nullptr;
         ObjectAttributes->ObjectName->Buffer = (wchar_t *)mapTarget.c_str();
         ObjectAttributes->ObjectName->Length = mapTarget.length() * 2;
         ObjectAttributes->ObjectName->MaximumLength = mapTarget.capacity() * 2;
@@ -253,8 +255,10 @@ NTSTATUS NTAPI HookZwOpenFile(
 
     std::wstring mapTarget;
     if (GetFileMapTarget(fileName, mapTarget)) {
+        MakeFileFullPath(mapTarget);
         mapTarget = LR"(\??\)" + mapTarget;
 
+        ObjectAttributes->RootDirectory = nullptr;
         ObjectAttributes->ObjectName->Buffer = (wchar_t *)mapTarget.c_str();
         ObjectAttributes->ObjectName->Length = mapTarget.length() * 2;
         ObjectAttributes->ObjectName->MaximumLength = mapTarget.capacity() * 2;
@@ -286,6 +290,7 @@ void InitializeHooks(HMODULE hModule) {
             key = unicodeToken;
         } else {
             auto wValue = AnsiToUnicode(token);
+            
             appRunnerFileMaps[key] = wValue;
             key = std::wstring();
         }
