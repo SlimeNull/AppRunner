@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
+using AppRunner.Helpers;
 using AppRunner.Models;
 using AppRunner.Resources;
 using AppRunner.Services;
@@ -14,6 +16,10 @@ namespace AppRunner.ViewModels
 {
     public partial class EnvironmentsPageModel : ObservableObject
     {
+        public CollectionViewSource ItemsViewSource { get; }
+        public CollectionViewSource ItemsGroupViewSource { get; }
+        public DictionaryProxy<string, bool> GroupExpandedValues { get; }
+
         private readonly ConfigurationService _configurationService;
         private RunEnvironment? _editingEnvironmentToPopulate;
 
@@ -22,6 +28,9 @@ namespace AppRunner.ViewModels
 
         [ObservableProperty]
         private bool _isCreatingNewEnvironment;
+
+        [ObservableProperty]
+        private bool _showGrouped;
 
         [ObservableProperty]
         private string? _editEnvironmentDialogTitle;
@@ -34,8 +43,38 @@ namespace AppRunner.ViewModels
         public EnvironmentsPageModel(ConfigurationService configurationService)
         {
             this._configurationService = configurationService;
+
+            ShowGrouped = _configurationService.Configuration.EnvironmentsShowGroupView;
+
+            ItemsViewSource = new CollectionViewSource()
+            {
+                Source = Environments,
+            };
+
+            ItemsGroupViewSource = new CollectionViewSource()
+            {
+                Source = Environments,
+                GroupDescriptions =
+                {
+                    new PropertyGroupDescription(nameof(RunApp.Group)),
+                }
+            };
+
+            GroupExpandedValues = new DictionaryProxy<string, bool>(_configurationService.Configuration.EnvironmentGroupExpandedValues)
+            {
+                DefaultValue = true,
+            };
         }
 
+
+        [RelayCommand]
+        public void ToggleGroupView()
+        {
+            ShowGrouped ^= true;
+
+            _configurationService.Configuration.EnvironmentsShowGroupView = ShowGrouped;
+            _ = _configurationService.SaveConfiguration();
+        }
 
         [RelayCommand]
         public void DeployEnvironment(RunEnvironment env)
@@ -100,7 +139,7 @@ namespace AppRunner.ViewModels
             IsCreatingNewEnvironment = false;
 
             _configurationService.Configuration.Environments = Environments.ToArray();
-            _configurationService.SaveConfiguration();
+            _ = _configurationService.SaveConfiguration();
         }
 
 
@@ -110,7 +149,7 @@ namespace AppRunner.ViewModels
             Environments.Remove(env);
 
             _configurationService.Configuration.Environments = Environments.ToArray();
-            _configurationService.SaveConfiguration();
+            _ = _configurationService.SaveConfiguration();
         }
     }
 }

@@ -90,7 +90,7 @@ namespace AppRunner.Services
                     else
                     {
                         Configuration.Environments = Configuration.Environments
-                            .Concat(configuration.Environments)
+                            .Concat(configuration.Environments.Where(env => !Configuration.Environments.Any(existEnv => existEnv.Guid == env.Guid)))
                             .ToArray();
                     }
                 }
@@ -104,7 +104,7 @@ namespace AppRunner.Services
                     else
                     {
                         Configuration.Applications = Configuration.Applications
-                            .Concat(configuration.Applications)
+                            .Concat(configuration.Applications.Where(app => !Configuration.Applications.Any(existApp => existApp.Guid == app.Guid)))
                             .ToArray();
                     }
                 }

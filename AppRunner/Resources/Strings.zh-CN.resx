@@ -297,4 +297,16 @@
   <data name="Message.FailedToExportConfigurationPleaseCheckIfYouCurrentlyHaveAccessRightsToTargetPath" xml:space="preserve">
     <value>导出配置失败, 请检查您当前是否拥有目标路径的访问权限</value>
   </data>
+  <data name="Common.View" xml:space="preserve">
+    <value>视图</value>
+  </data>
+  <data name="Message.FailedToImportConfiguration" xml:space="preserve">
+    <value>导入配置失败</value>
+  </data>
+  <data name="Message.FailedToExportConfiguration" xml:space="preserve">
+    <value>导出配置失败</value>
+  </data>
+  <data name="Common.Default" xml:space="preserve">
+    <value>默认</value>
+  </data>
 </root>

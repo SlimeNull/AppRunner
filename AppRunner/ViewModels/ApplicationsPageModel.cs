@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using AppRunner.Controls;
 using AppRunner.Helpers;
 using AppRunner.Injection;
@@ -22,6 +23,10 @@ namespace AppRunner.ViewModels
 {
     public partial class ApplicationsPageModel : ObservableObject
     {
+        public CollectionViewSource ItemsViewSource { get; } 
+        public CollectionViewSource ItemsGroupViewSource { get; }
+        public DictionaryProxy<string, bool> GroupExpandedValues { get; }
+
         private readonly ConfigurationService _configurationService;
         private readonly InjectionService _injectionService;
         private RunApp? _editingApplicationToPopulate;
@@ -34,6 +39,9 @@ namespace AppRunner.ViewModels
 
         [ObservableProperty]
         private bool _isCreatingNewApplication;
+
+        [ObservableProperty]
+        private bool _showGrouped = true;
 
         [ObservableProperty]
         private string? _editApplicationDialogTitle;
@@ -49,6 +57,27 @@ namespace AppRunner.ViewModels
         {
             this._configurationService = configurationService;
             this._injectionService = injectionService;
+
+            ShowGrouped = _configurationService.Configuration.ApplicationsShowGroupView;
+
+            ItemsViewSource = new CollectionViewSource()
+            {
+                Source = Applications,
+            };
+
+            ItemsGroupViewSource = new CollectionViewSource()
+            {
+                Source = Applications,
+                GroupDescriptions =
+                {
+                    new PropertyGroupDescription(nameof(RunApp.Group)),
+                }
+            };
+
+            GroupExpandedValues = new DictionaryProxy<string, bool>(_configurationService.Configuration.ApplicationGroupExpandedValues)
+            {
+                DefaultValue = true,
+            };
         }
 
 
@@ -152,6 +181,15 @@ namespace AppRunner.ViewModels
         }
 
         [RelayCommand]
+        public void ToggleGroupView()
+        {
+            ShowGrouped ^= true;
+
+            _configurationService.Configuration.ApplicationsShowGroupView = ShowGrouped;
+            _ = _configurationService.SaveConfiguration();
+        }
+
+        [RelayCommand]
         public void EditApplication(RunApp app)
         {
             _editingApplicationToPopulate = app;
@@ -178,6 +216,7 @@ namespace AppRunner.ViewModels
                 }
                 else if (_editingApplicationToPopulate is not null)
                 {
+                    _editingApplicationToPopulate.Group = _editingApplicationToPopulate.Group.Trim();
                     EditingApplication.Populate(_editingApplicationToPopulate);
                 }
             }
@@ -187,6 +226,8 @@ namespace AppRunner.ViewModels
 
             _configurationService.Configuration.Applications = Applications.ToArray();
             await _configurationService.SaveConfiguration();
+
+            ItemsGroupViewSource.View.Refresh();
         }
 
         [RelayCommand]

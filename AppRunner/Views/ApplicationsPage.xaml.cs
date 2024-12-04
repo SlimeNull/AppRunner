@@ -32,11 +32,16 @@ namespace AppRunner.Views
             ConfigurationService configurationService)
         {
             ConfigurationService = configurationService;
-
             ViewModel = viewModel;
             DataContext = this;
-            InitializeComponent();
 
+            InitializeComponent();
+            LoadFromConfiguration();
+        }
+
+        public void LoadFromConfiguration()
+        {
+            ViewModel.Applications.Clear();
             if (ConfigurationService.Configuration.Applications is not null)
             {
                 foreach (var app in ConfigurationService.Configuration.Applications)
@@ -44,6 +49,42 @@ namespace AppRunner.Views
                     ViewModel.Applications.Add(app);
                 }
             }
+        }
+
+        private void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+            if (sender is not FrameworkElement frameworkElement ||
+                frameworkElement.DataContext is not CollectionViewGroup groupItem)
+            {
+                return;
+            }
+
+            ViewModel.GroupExpandedValues[(string)groupItem.Name] = true;
+            if (!ConfigurationService.Configuration.UpdateApplicationGroupExpandedValue((string)groupItem.Name, true))
+            {
+                return;
+            }
+
+            ConfigurationService.Configuration.TrimGroupExpandedValues();
+            _ = ConfigurationService.SaveConfiguration();
+        }
+
+        private void Expander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            if (sender is not FrameworkElement frameworkElement ||
+                frameworkElement.DataContext is not CollectionViewGroup groupItem)
+            {
+                return;
+            }
+
+            ViewModel.GroupExpandedValues[(string)groupItem.Name] = false;
+            if (!ConfigurationService.Configuration.UpdateApplicationGroupExpandedValue((string)groupItem.Name, false))
+            {
+                return;
+            }
+
+            ConfigurationService.Configuration.TrimGroupExpandedValues();
+            _ = ConfigurationService.SaveConfiguration();
         }
     }
 }

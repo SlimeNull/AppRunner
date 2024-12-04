@@ -306,4 +306,10 @@
   <data name="Message.FailedToExportConfiguration" xml:space="preserve">
     <value>Failed to export configuration</value>
   </data>
+  <data name="Common.View" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="Common.Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
 </root>

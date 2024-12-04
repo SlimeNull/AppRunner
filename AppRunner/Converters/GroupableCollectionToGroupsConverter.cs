@@ -17,6 +17,7 @@ namespace AppRunner.Converters
         {
             return value
                 .Select(groupable => groupable.Group)
+                .Distinct()
                 .Where(group => !string.IsNullOrWhiteSpace(group));
         }
     }

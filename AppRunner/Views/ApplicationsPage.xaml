@@ -20,6 +20,8 @@
                          Data="{Binding ViewModel}"/>
         <ws:BindingProxy x:Key="ConfigurationProxy"
                          Data="{Binding ConfigurationService.Configuration}"/>
+        <ws:BindingProxy x:Key="ApplicationsProxy"
+                         Data="{Binding ViewModel.Applications}"/>
         <ws:BindingProxy x:Key="EnvironmentsProxy"
                          Data="{Binding ConfigurationService.Configuration.Environments}"/>
         <ws:NumberCompareConverter x:Key="NumberNotZeroConverter"
@@ -29,6 +31,8 @@
             <ws:DivideNumberConverter By="180"/>
             <ws:NumberConverter TargetType="{x:Type sys:Int32}" />
         </ws:ValueConverterGroup>
+        <cvt:ExpandedValuesNameToValueConverter x:Key="ExpandedValuesNameToValueConverter"
+                                                ExpandedValues="{Binding Source={StaticResource ViewModelProxy},Path=Data.GroupExpandedValues}"/>
     </Page.Resources>
 
     <Grid>
@@ -38,8 +42,56 @@
                                        d:Condition="{ws:Boolean True}">
                     <ws:ConditionalControl.ContentWhenTrue>
                         <StackPanel>
-                            <ItemsControl ItemsSource="{Binding ViewModel.Applications}"
-                                          d:ItemsSource="{d:SampleData ItemCount=10}">
+                            <ItemsControl d:ItemsSource="{d:SampleData ItemCount=10}">
+                                <ItemsControl.Style>
+                                    <Style TargetType="ItemsControl">
+                                        <Setter Property="ItemsSource" Value="{Binding ViewModel.ItemsViewSource.View}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ViewModel.ShowGrouped}"
+                                                         Value="{ws:Boolean True}">
+                                                <Setter Property="ItemsSource"
+                                                        Value="{Binding ViewModel.ItemsGroupViewSource.View}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ItemsControl.Style>
+                                <ItemsControl.GroupStyle>
+                                    <GroupStyle>
+                                        <GroupStyle.ContainerStyle>
+                                            <Style TargetType="{x:Type GroupItem}">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                            <ws:Expander IsExpanded="{Binding Path=Name,Converter={StaticResource ExpandedValuesNameToValueConverter},Mode=OneTime}"
+                                                                         ExpandDirection="Down"
+                                                                         HeaderIconPosition="End"
+                                                                         HeaderPadding="8"
+                                                                         HeaderBorderThickness="1"
+                                                                         HeaderCornerRadius="6"
+                                                                         HeaderBackground="White"
+                                                                         HeaderBorderBrush="#e0e0e0"
+                                                                         CircleStroke="{x:Null}"
+                                                                         HoverCircleStroke="{x:Null}"
+                                                                         PressedCircleStroke="{x:Null}"
+                                                                         FontFamily="{StaticResource FontDingDing}"
+                                                                         Padding="0 0 0 8"
+                                                                         Expanded="Expander_Expanded"
+                                                                         Collapsed="Expander_Collapsed">
+                                                                <ws:Expander.Header>
+                                                                    <StackPanel>
+                                                                        <TextBlock Text="{Binding Name,Converter={x:Static cvt:GroupNameConverter.Instance}}"
+                                                                                   FontSize="14"/>
+                                                                    </StackPanel>
+                                                                </ws:Expander.Header>
+                                                                <ItemsPresenter Margin="4"/>
+                                                            </ws:Expander>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </GroupStyle.ContainerStyle>
+                                    </GroupStyle>
+                                </ItemsControl.GroupStyle>
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <ws:UniformGrid Columns="{Binding RelativeSource={RelativeSource Mode=Self},Path=ActualWidth,Converter={StaticResource DivideBy180Converter}}"

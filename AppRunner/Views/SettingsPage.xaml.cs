@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using AppRunner.Resources;
 using AppRunner.Services;
 using AppRunner.Utilities;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 
 namespace AppRunner.Views
@@ -68,7 +69,13 @@ namespace AppRunner.Views
 
                 var ok = await ConfigurationService.ImportFrom(_importConfigurationDialog.FileName);
 
-                if (!ok)
+                if (ok)
+                {
+                    App.Services.GetRequiredService<ApplicationsPage>().LoadFromConfiguration();
+                    App.Services.GetRequiredService<EnvironmentsPage>().LoadFromConfiguration();
+                    await ConfigurationService.SaveConfiguration();
+                }
+                else
                 {
                     MessageUtils.ShowDialogMessage(Strings.Common_Error, Strings.Message_FailedToImportConfigurationPleaseCheckIfTheFileFormatIsCorrect);
                 }

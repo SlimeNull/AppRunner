@@ -115,6 +115,15 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        internal static string Common_Default {
+            get {
+                return ResourceManager.GetString("Common.Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string Common_Error {
@@ -156,6 +165,15 @@ namespace AppRunner.Resources {
         internal static string Common_Select {
             get {
                 return ResourceManager.GetString("Common.Select", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        internal static string Common_View {
+            get {
+                return ResourceManager.GetString("Common.View", resourceCulture);
             }
         }
         

@@ -39,7 +39,8 @@ namespace AppRunner
 
                     return
                     [
-                        new PageCommand("\uF067", Strings.Common_Add, appsPage.ViewModel.AddNewApplicationCommand)
+                        new PageCommand("\uf279", Strings.Common_View, appsPage.ViewModel.ToggleGroupViewCommand),
+                        new PageCommand("\uF067", Strings.Common_Add, appsPage.ViewModel.AddNewApplicationCommand),
                     ];
                 }
             },
@@ -53,7 +54,8 @@ namespace AppRunner
 
                     return
                     [
-                        new PageCommand("\uF067", Strings.Common_Add, envsPage.ViewModel.AddNewEnvironmentCommand)
+                        new PageCommand("\uf279", Strings.Common_View, envsPage.ViewModel.ToggleGroupViewCommand),
+                        new PageCommand("\uF067", Strings.Common_Add, envsPage.ViewModel.AddNewEnvironmentCommand),
                     ];
                 }
             },
@@ -63,7 +65,7 @@ namespace AppRunner
                 PageFactory = () => App.Services.GetRequiredService<SettingsPage>(),
             },
 
-            new AppNavigationItem("\uF1B3", Strings.PageName_About, typeof(AboutPage), false)
+            new AppNavigationItem("\uf02d", Strings.PageName_About, typeof(AboutPage), false)
             {
                 PageFactory = () => App.Services.GetRequiredService<AboutPage>(),
                 PageCommandsFactory = page =>
