@@ -30,7 +30,14 @@ namespace AppRunner.Services
             var existedItem = await _localStorageFolder.TryGetItemAsync(fileHookerFileName);
             if (existedItem is StorageFile existedFile)
             {
-                return existedFile;
+                if (Windows.ApplicationModel.Package.Current.InstalledDate > existedFile.DateCreated)
+                {
+                    await existedFile.DeleteAsync(); // 如果应用更新了, 则删除旧的FileHooker.dll
+                }
+                else
+                {
+                    return existedFile;
+                }
             }
 
             var fileHookerBinaryStream = _currentAssembly.GetManifestResourceStream(fileHookerResourceName);
@@ -55,7 +62,7 @@ namespace AppRunner.Services
                 return false;
             }
 
-            string fileHookerFullPath = Path.Combine(fileHooker.Path);
+            string fileHookerFullPath = fileHooker.Path;
 
             if (!File.Exists(fileHookerFullPath))
             {
