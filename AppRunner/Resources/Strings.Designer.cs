@@ -79,6 +79,24 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        internal static string Button_Export {
+            get {
+                return ResourceManager.GetString("Button.Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        internal static string Button_Import {
+            get {
+                return ResourceManager.GetString("Button.Import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         internal static string Common_Add {
@@ -93,6 +111,15 @@ namespace AppRunner.Resources {
         internal static string Common_Cancel {
             get {
                 return ResourceManager.GetString("Common.Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        internal static string Common_Default {
+            get {
+                return ResourceManager.GetString("Common.Default", resourceCulture);
             }
         }
         
@@ -115,6 +142,15 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        internal static string Common_None {
+            get {
+                return ResourceManager.GetString("Common.None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         internal static string Common_OK {
@@ -129,6 +165,15 @@ namespace AppRunner.Resources {
         internal static string Common_Select {
             get {
                 return ResourceManager.GetString("Common.Select", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        internal static string Common_View {
+            get {
+                return ResourceManager.GetString("Common.View", resourceCulture);
             }
         }
         
@@ -151,6 +196,15 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import or export configuration.
+        /// </summary>
+        internal static string Description_Configuration {
+            get {
+                return ResourceManager.GetString("Description.Configuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application default working directory.
         /// </summary>
         internal static string Label_ApplicationDefaultWorkingDirectory {
@@ -160,7 +214,7 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ApplicationInformation.
+        ///   Looks up a localized string similar to Application Information.
         /// </summary>
         internal static string Label_ApplicationInformation {
             get {
@@ -192,6 +246,15 @@ namespace AppRunner.Resources {
         internal static string Label_CommandLineArguments {
             get {
                 return ResourceManager.GetString("Label.CommandLineArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration.
+        /// </summary>
+        internal static string Label_Configuration {
+            get {
+                return ResourceManager.GetString("Label.Configuration", resourceCulture);
             }
         }
         
@@ -273,6 +336,15 @@ namespace AppRunner.Resources {
         internal static string Label_Group {
             get {
                 return ResourceManager.GetString("Label.Group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License.
+        /// </summary>
+        internal static string Label_License {
+            get {
+                return ResourceManager.GetString("Label.License", resourceCulture);
             }
         }
         
@@ -403,6 +475,43 @@ namespace AppRunner.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to export configuration.
+        /// </summary>
+        internal static string Message_FailedToExportConfiguration {
+            get {
+                return ResourceManager.GetString("Message.FailedToExportConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to export configuration, please check if you currently have access rights to the target path..
+        /// </summary>
+        internal static string Message_FailedToExportConfigurationPleaseCheckIfYouCurrentlyHaveAccessRightsToTargetPath {
+            get {
+                return ResourceManager.GetString("Message.FailedToExportConfigurationPleaseCheckIfYouCurrentlyHaveAccessRightsToTar" +
+                        "getPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to import configuration.
+        /// </summary>
+        internal static string Message_FailedToImportConfiguration {
+            get {
+                return ResourceManager.GetString("Message.FailedToImportConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to import configuration, please check if the file format is correct..
+        /// </summary>
+        internal static string Message_FailedToImportConfigurationPleaseCheckIfTheFileFormatIsCorrect {
+            get {
+                return ResourceManager.GetString("Message.FailedToImportConfigurationPleaseCheckIfTheFileFormatIsCorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to run application.
         /// </summary>
         internal static string Message_FailedToRunApplication {
@@ -507,6 +616,24 @@ namespace AppRunner.Resources {
         internal static string Title_EditEnvironment {
             get {
                 return ResourceManager.GetString("Title.EditEnvironment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export configuration.
+        /// </summary>
+        internal static string Title_ExportConfiguration {
+            get {
+                return ResourceManager.GetString("Title.ExportConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import configuration.
+        /// </summary>
+        internal static string Title_ImportConfiguration {
+            get {
+                return ResourceManager.GetString("Title.ImportConfiguration", resourceCulture);
             }
         }
         

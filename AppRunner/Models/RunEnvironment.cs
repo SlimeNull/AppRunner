@@ -1,5 +1,6 @@
 ﻿using AppRunner.Abstraction;
 using AppRunner.Data;
+using AppRunner.Resources;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -21,7 +22,7 @@ namespace AppRunner.Models
         [ObservableProperty]
         private string _group = string.Empty;
 
-        public List<ReferenceKeyValuePair<string, string>>? EnvironmentVariables { get; set; } 
+        public List<ReferenceKeyValuePair<string, string>>? EnvironmentVariables { get; set; }
 
         public List<ReferenceKeyValuePair<string, string>>? FileMaps { get; set; }
 
@@ -44,7 +45,7 @@ namespace AppRunner.Models
             runEnv.Description = Description;
             runEnv.WorkingDirectory = WorkingDirectory;
             runEnv.Group = Group;
-            
+
             if (EnvironmentVariables is null)
             {
                 runEnv.EnvironmentVariables = null;
@@ -67,5 +68,11 @@ namespace AppRunner.Models
                     .ToList();
             }
         }
+
+        public static RunEnvironment Empty { get; } = new RunEnvironment()
+        {
+            Name = Strings.Common_None,
+            Guid = default,
+        };
     }
 }

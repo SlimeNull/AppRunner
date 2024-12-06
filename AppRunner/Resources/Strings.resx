@@ -273,4 +273,43 @@
   <data name="Label.License" xml:space="preserve">
     <value>License</value>
   </data>
+  <data name="Common.None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Label.Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="Description.Configuration" xml:space="preserve">
+    <value>Import or export configuration</value>
+  </data>
+  <data name="Button.Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Button.Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Title.ImportConfiguration" xml:space="preserve">
+    <value>Import configuration</value>
+  </data>
+  <data name="Title.ExportConfiguration" xml:space="preserve">
+    <value>Export configuration</value>
+  </data>
+  <data name="Message.FailedToImportConfigurationPleaseCheckIfTheFileFormatIsCorrect" xml:space="preserve">
+    <value>Failed to import configuration, please check if the file format is correct.</value>
+  </data>
+  <data name="Message.FailedToExportConfigurationPleaseCheckIfYouCurrentlyHaveAccessRightsToTargetPath" xml:space="preserve">
+    <value>Failed to export configuration, please check if you currently have access rights to the target path.</value>
+  </data>
+  <data name="Message.FailedToImportConfiguration" xml:space="preserve">
+    <value>Failed to import configuration</value>
+  </data>
+  <data name="Message.FailedToExportConfiguration" xml:space="preserve">
+    <value>Failed to export configuration</value>
+  </data>
+  <data name="Common.View" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="Common.Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
 </root>

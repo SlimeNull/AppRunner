@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CopyFileHooker">
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="BuildHookers">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -14,12 +14,13 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
-    <PackageReference Include="EleCho.WpfSuite" Version="0.9.12" />
+    <PackageReference Include="EleCho.WpfSuite" Version="0.9.14" />
     <PackageReference Include="EleCho.WpfSuite.FluentDesign" Version="0.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Hookers\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
@@ -57,12 +58,7 @@
 
     </EmbeddedResource>
   </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Hookers\AppRunner.FileHooker.x64.dll" />
-    <EmbeddedResource Include="Hookers\AppRunner.FileHooker.x86.dll" />
-  </ItemGroup>
-  <Target Name="CopyFileHooker">
+  <Target Name="BuildHookers">
     <MSBuild Projects="..\AppRunner.FileHooker\AppRunner.FileHooker.vcxproj" Properties="Platform=x86" />
     <MSBuild Projects="..\AppRunner.FileHooker\AppRunner.FileHooker.vcxproj" Properties="Platform=x64" />
     <Copy SourceFiles="..\x64\$(Configuration)\AppRunner.FileHooker.dll" DestinationFiles="Hookers\AppRunner.FileHooker.x64.dll" />
