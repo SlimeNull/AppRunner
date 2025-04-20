@@ -200,9 +200,23 @@ namespace AppRunner.ViewModels
         }
 
         [RelayCommand]
+        public void DuplicateApplication(RunApp app)
+        {
+            var copy = app.Clone();
+            copy.Name = NamingUtils.CreateCopyName(app.Name, newName => !Applications.Any(anyApp => anyApp.Name == newName));
+
+            Applications.Add(copy);
+
+            _configurationService.Configuration.Applications = Applications.ToArray();
+            _ = _configurationService.SaveConfiguration();
+        }
+
+        [RelayCommand]
         public void CancelEditApplicationDialog()
         {
+            EditingApplication = null;
             IsEditApplicationDialogOpen = false;
+            IsCreatingNewApplication = false;
         }
 
         [RelayCommand]
@@ -260,6 +274,7 @@ namespace AppRunner.ViewModels
             if (string.IsNullOrWhiteSpace(app.FileName))
             {
                 MessageUtils.ShowDialogMessage(Strings.Common_Error, Strings.Message_AppFileNameCanNotBeEmpty);
+                return;
             }
 
             var trimmedAppFileName = app.FileName.Trim('"');

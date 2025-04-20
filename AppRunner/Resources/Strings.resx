@@ -312,4 +312,7 @@
   <data name="Common.Default" xml:space="preserve">
     <value>Default</value>
   </data>
+  <data name="Menu.Duplicate" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
 </root>

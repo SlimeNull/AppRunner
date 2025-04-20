@@ -309,4 +309,7 @@
   <data name="Common.Default" xml:space="preserve">
     <value>默认</value>
   </data>
+  <data name="Menu.Duplicate" xml:space="preserve">
+    <value>创建副本</value>
+  </data>
 </root>

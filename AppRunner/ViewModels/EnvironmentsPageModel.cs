@@ -9,6 +9,7 @@ using AppRunner.Helpers;
 using AppRunner.Models;
 using AppRunner.Resources;
 using AppRunner.Services;
+using AppRunner.Utilities;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -115,9 +116,23 @@ namespace AppRunner.ViewModels
         }
 
         [RelayCommand]
+        public void DuplicateEnvironment(RunEnvironment env)
+        {
+            var copy = env.Clone();
+            copy.Name = NamingUtils.CreateCopyName(env.Name, newName => !Environments.Any(anyApp => anyApp.Name == newName));
+
+            Environments.Add(copy);
+
+            _configurationService.Configuration.Environments = Environments.ToArray();
+            _ = _configurationService.SaveConfiguration();
+        }
+
+        [RelayCommand]
         public void CancelEditEnvironmentDialog()
         {
+            EditingEnvironment = null;
             IsEditEnvironmentDialogOpen = false;
+            IsCreatingNewEnvironment = false;
         }
 
         [RelayCommand]

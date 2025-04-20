@@ -70,9 +70,9 @@
                                                                          HeaderCornerRadius="6"
                                                                          HeaderBackground="White"
                                                                          HeaderBorderBrush="#e0e0e0"
-                                                                         CircleStroke="{x:Null}"
-                                                                         HoverCircleStroke="{x:Null}"
-                                                                         PressedCircleStroke="{x:Null}"
+                                                                         HeaderCircleStroke="{x:Null}"
+                                                                         HeaderCircleHoverStroke="{x:Null}"
+                                                                         HeaderCirclePressedStroke="{x:Null}"
                                                                          FontFamily="{StaticResource FontDingDing}"
                                                                          Padding="0 0 0 8"
                                                                          Expanded="Expander_Expanded"
@@ -134,6 +134,10 @@
                                                                  Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.EditApplicationCommand}"
                                                                  CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"
                                                                  FontFamily="{StaticResource FontDingDing}"/>
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.Duplicate}"
+                                                                 Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.DuplicateApplicationCommand}"
+                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"
+                                                                 FontFamily="{StaticResource FontDingDing}"/>
                                                     <ws:MenuItem Header="{mk:LocalString Menu.RunAsAdministrator}"
                                                                  Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationAsAdministratorCommand}"
                                                                  CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"
@@ -186,9 +190,13 @@
         </ws:ScrollViewer>
 
         <ws:Dialog IsOpen="{Binding ViewModel.IsEditApplicationDialogOpen,Mode=TwoWay}">
+            <ws:Dialog.InputBindings>
+                <KeyBinding Key="Esc" Command="{Binding ViewModel.CancelEditApplicationDialogCommand}"/>
+            </ws:Dialog.InputBindings>
             <Border Background="#ffffff"
                     MinWidth="320"
-                    CornerRadius="8">
+                    CornerRadius="8"
+                    TextElement.FontFamily="{StaticResource FontDingDing}">
                 <DockPanel>
                     <TextBlock Text="{Binding ViewModel.EditApplicationDialogTitle}"
                                FontSize="18"

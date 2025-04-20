@@ -6,7 +6,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using AppRunner.Injection;
+using Windows.ApplicationModel;
 using Windows.Storage;
 
 namespace AppRunner.Services
@@ -28,9 +30,15 @@ namespace AppRunner.Services
             var fileHookerResourceName = $"AppRunner.Hookers.{fileHookerFileName}";
 
             var existedItem = await _localStorageFolder.TryGetItemAsync(fileHookerFileName);
-            if (existedItem is StorageFile existedFile)
+            if (existedItem is StorageFile existedFile &&
+                existedFile.DateCreated > Package.Current.InstalledDate)
             {
-                return existedFile;
+                if (existedItem.DateCreated > Package.Current.InstalledDate)
+                {
+                    return existedFile;
+                }
+
+                await existedFile.DeleteAsync();
             }
 
             var fileHookerBinaryStream = _currentAssembly.GetManifestResourceStream(fileHookerResourceName);
@@ -39,7 +47,7 @@ namespace AppRunner.Services
                 return null;
             }
 
-            var newFile = await _localStorageFolder.CreateFileAsync(fileHookerFileName);
+            var newFile = await _localStorageFolder.CreateFileAsync(fileHookerFileName, CreationCollisionOption.ReplaceExisting);
             using var newFileStream = await newFile.OpenStreamForWriteAsync();
             await fileHookerBinaryStream.CopyToAsync(newFileStream);
 

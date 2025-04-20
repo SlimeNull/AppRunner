@@ -82,7 +82,10 @@
                                     <ws:UniformGrid Columns="1"
                                                     Margin="4 0 0 0"
                                                     VerticalSpacing="4">
-                                        <TextBlock Text="SlimeNull"/>
+                                        <ws:Button Style="{StaticResource ButtonsStyles.Text}"
+                                                   HorizontalAlignment="Left"
+                                                   Content="SlimeNull"
+                                                   Command="{Binding WhoIsSlimeNullCommand}"/>
                                         <TextBlock Text="{mk:AppVersionText}"/>
                                         <ws:Button Style="{StaticResource ButtonsStyles.Text}"
                                                    HorizontalAlignment="Left"
@@ -147,9 +150,13 @@
 
         <ws:Dialog IsOpen="{Binding IsLicenseDialogOpen}"
                    d:Visibility="Collapsed">
+            <ws:Dialog.InputBindings>
+                <KeyBinding Key="Esc" Command="{Binding CloseLicenseCommand}"/>
+            </ws:Dialog.InputBindings>
             <ws:Border Background="#ffffff"
                        MinWidth="320"
-                       CornerRadius="8">
+                       CornerRadius="8"
+                       TextElement.FontFamily="{StaticResource FontDingDing}">
                 <DockPanel>
                     <Border DockPanel.Dock="Top">
                         <TextBlock Text="{mk:LocalString Label.License}"

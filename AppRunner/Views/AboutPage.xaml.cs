@@ -49,6 +49,17 @@ namespace AppRunner.Views
         }
 
         [RelayCommand]
+        public void WhoIsSlimeNull()
+        {
+            Process.Start(
+                new ProcessStartInfo()
+                {
+                    FileName = @"https://slimenull.com",
+                    UseShellExecute = true,
+                });
+        }
+
+        [RelayCommand]
         public void ViewLicense(string license)
         {
             CurrentLicense = license;
