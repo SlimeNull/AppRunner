@@ -30,10 +30,11 @@ namespace AppRunner.Services
             var fileHookerResourceName = $"AppRunner.Hookers.{fileHookerFileName}";
 
             var existedItem = await _localStorageFolder.TryGetItemAsync(fileHookerFileName);
-            if (existedItem is StorageFile existedFile &&
-                existedFile.DateCreated > Package.Current.InstalledDate)
+            if (existedItem is StorageFile existedFile)
             {
-                if (existedItem.DateCreated > Package.Current.InstalledDate)
+                var basicProperties = await existedFile.GetBasicPropertiesAsync();
+                var dateModified = basicProperties.DateModified;
+                if (dateModified > Package.Current.InstalledDate)
                 {
                     return existedFile;
                 }

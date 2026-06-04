@@ -117,8 +117,9 @@
                                             </ws:Button.Resources>
                                             <ws:Button.ContextMenu>
                                                 <ws:ContextMenu>
-                                                    <ws:MenuItem Header="{mk:LocalString Menu.Run}"
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.Deploy}"
                                                                  Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.DeployEnvironmentCommand}"
+                                                                 CommandParameter="{Binding}"
                                                                  FontFamily="{StaticResource FontDingDing}"/>
                                                     <ws:MenuItem Header="{mk:LocalString Menu.Edit}"
                                                                  Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.EditEnvironmentCommand}"

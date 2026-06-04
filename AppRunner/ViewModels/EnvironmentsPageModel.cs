@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,7 +81,10 @@ namespace AppRunner.ViewModels
         [RelayCommand]
         public void DeployEnvironment(RunEnvironment env)
         {
-            Environment.CurrentDirectory = env.WorkingDirectory;
+            if (Directory.Exists(env.WorkingDirectory))
+            {
+                Environment.CurrentDirectory = env.WorkingDirectory;
+            }
 
             if (env.EnvironmentVariables is not null)
             {
@@ -91,7 +95,37 @@ namespace AppRunner.ViewModels
                         continue;
                     }
 
-                    Environment.SetEnvironmentVariable(var.Key, var.Value);
+                    Environment.SetEnvironmentVariable(var.Key, var.Value, EnvironmentVariableTarget.Machine);
+                }
+            }
+
+            if (env.FileMaps is not null)
+            {
+                foreach (var fileMap in env.FileMaps)
+                {
+                    if (fileMap is null)
+                    {
+                        continue;
+                    }
+
+                    if (File.Exists(fileMap.Value) &&
+                        !string.IsNullOrWhiteSpace(fileMap.Key))
+                    {
+                        var directory = Path.GetDirectoryName(fileMap.Key);
+                        try
+                        {
+                            if (!Directory.Exists(directory))
+                            {
+                                Directory.CreateDirectory(directory!);
+                            }
+
+                            File.Copy(fileMap.Value, fileMap.Key, true);
+                        }
+                        catch
+                        {
+
+                        }
+                    }
                 }
             }
         }

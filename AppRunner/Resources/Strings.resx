@@ -315,4 +315,7 @@
   <data name="Menu.Duplicate" xml:space="preserve">
     <value>Duplicate</value>
   </data>
+  <data name="Menu.Deploy" xml:space="preserve">
+    <value>Deploy</value>
+  </data>
 </root>
