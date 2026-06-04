@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -23,6 +25,7 @@ namespace AppRunner.ViewModels
         public DictionaryProxy<string, bool> GroupExpandedValues { get; }
 
         private readonly ConfigurationService _configurationService;
+        private readonly EnvironmentDeploymentService _environmentDeploymentService;
         private RunEnvironment? _editingEnvironmentToPopulate;
 
         [ObservableProperty]
@@ -42,9 +45,12 @@ namespace AppRunner.ViewModels
 
         public ObservableCollection<RunEnvironment> Environments { get; } = new();
 
-        public EnvironmentsPageModel(ConfigurationService configurationService)
+        public EnvironmentsPageModel(
+            ConfigurationService configurationService,
+            EnvironmentDeploymentService environmentDeploymentService)
         {
             this._configurationService = configurationService;
+            this._environmentDeploymentService = environmentDeploymentService;
 
             ShowGrouped = _configurationService.Configuration.EnvironmentsShowGroupView;
 
@@ -81,52 +87,42 @@ namespace AppRunner.ViewModels
         [RelayCommand]
         public void DeployEnvironment(RunEnvironment env)
         {
-            if (Directory.Exists(env.WorkingDirectory))
+            if (env is null)
             {
-                Environment.CurrentDirectory = env.WorkingDirectory;
+                return;
             }
 
-            if (env.EnvironmentVariables is not null)
+            if (!IsRunningAsAdministrator())
             {
-                foreach (var var in env.EnvironmentVariables)
-                {
-                    if (string.IsNullOrWhiteSpace(var.Key))
-                    {
-                        continue;
-                    }
-
-                    Environment.SetEnvironmentVariable(var.Key, var.Value, EnvironmentVariableTarget.Machine);
-                }
+                StartElevatedDeployEnvironment(env);
+                return;
             }
 
-            if (env.FileMaps is not null)
+            _environmentDeploymentService.DeployEnvironment(env);
+        }
+
+        private static bool IsRunningAsAdministrator()
+        {
+            using var identity = WindowsIdentity.GetCurrent();
+            var principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
+
+        private static void StartElevatedDeployEnvironment(RunEnvironment env)
+        {
+            try
             {
-                foreach (var fileMap in env.FileMaps)
+                Process.Start(new ProcessStartInfo()
                 {
-                    if (fileMap is null)
-                    {
-                        continue;
-                    }
-
-                    if (File.Exists(fileMap.Value) &&
-                        !string.IsNullOrWhiteSpace(fileMap.Key))
-                    {
-                        var directory = Path.GetDirectoryName(fileMap.Key);
-                        try
-                        {
-                            if (!Directory.Exists(directory))
-                            {
-                                Directory.CreateDirectory(directory!);
-                            }
-
-                            File.Copy(fileMap.Value, fileMap.Key, true);
-                        }
-                        catch
-                        {
-
-                        }
-                    }
-                }
+                    FileName = "apprunner.exe",
+                    Arguments = $"deploy \"{env.Guid}\"",
+                    UseShellExecute = true,
+                    Verb = "runas",
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageUtils.ShowDialogMessage(Strings.Common_Error, ex.Message);
             }
         }
 

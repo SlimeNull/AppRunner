@@ -1,15 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using CommandLine;
 
 namespace AppRunner.Models
 {
-    class AppArguments
+    abstract class AppArgumentsBase
     {
         [Option('n', "language")]
         public string? Language { get; set; }
+    }
+
+    [Verb("app", isDefault: true)]
+    class AppArguments : AppArgumentsBase
+    {
+    }
+
+    [Verb("deploy")]
+    class DeployEnvironmentArguments : AppArgumentsBase
+    {
+        [Value(0, Required = true)]
+        public Guid EnvironmentGuid { get; set; }
+    }
+
+    [Verb("run")]
+    class RunApplicationArguments : AppArgumentsBase
+    {
+        [Value(0, Required = true)]
+        public Guid ApplicationGuid { get; set; }
     }
 }

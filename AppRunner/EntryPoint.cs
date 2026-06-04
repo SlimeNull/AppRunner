@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Resources;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 using AppRunner.Models;
 using AppRunner.Resources;
+using AppRunner.Services;
 using CommandLine;
 
 namespace AppRunner
@@ -18,20 +17,47 @@ namespace AppRunner
         [STAThread]
         static void Main(string[] args)
         {
-            CommandLine.Parser.Default.ParseArguments<AppArguments>(args)
-                .WithParsed(args =>
-                {
-                    if (args.Language is not null)
+            var exitCode = Parser.Default
+                .ParseArguments<AppArguments, DeployEnvironmentArguments, RunApplicationArguments>(args)
+                .MapResult(
+                    (AppArguments args) =>
                     {
-                        try
-                        {
-                            Strings.Culture = new CultureInfo(args.Language);
-                            var r = new ResourceManager(typeof(Strings));
-                        }
-                        catch { }
-                    }
-                });
+                        ApplyCulture(args);
+                        StartApp();
+                        return 0;
+                    },
+                    (DeployEnvironmentArguments args) =>
+                    {
+                        ApplyCulture(args);
+                        return DeployEnvironment(args);
+                    },
+                    (RunApplicationArguments args) =>
+                    {
+                        ApplyCulture(args);
+                        return RunApplication(args);
+                    },
+                    _ => 1);
 
+            Environment.ExitCode = exitCode;
+        }
+
+        static void ApplyCulture(AppArgumentsBase args)
+        {
+            if (args.Language is null)
+            {
+                return;
+            }
+
+            try
+            {
+                Strings.Culture = new CultureInfo(args.Language);
+                var r = new ResourceManager(typeof(Strings));
+            }
+            catch { }
+        }
+
+        static void StartApp()
+        {
             // 确认程序是单例?
             if (!EnsureAppSingletion())
             {
@@ -41,6 +67,58 @@ namespace AppRunner
             var app = new App();
             app.InitializeComponent();
             app.Run();
+        }
+
+        static int DeployEnvironment(DeployEnvironmentArguments args)
+        {
+            try
+            {
+                var configurationService = new ConfigurationService();
+                configurationService.LoadConfiguration().GetAwaiter().GetResult();
+
+                var environment = configurationService.Configuration.Environments?
+                    .FirstOrDefault(env => env.Guid == args.EnvironmentGuid);
+
+                if (environment is null)
+                {
+                    return 2;
+                }
+
+                new EnvironmentDeploymentService().DeployEnvironment(environment);
+                return 0;
+            }
+            catch
+            {
+                return 3;
+            }
+        }
+
+        static int RunApplication(RunApplicationArguments args)
+        {
+            try
+            {
+                var configurationService = new ConfigurationService();
+                configurationService.LoadConfiguration().GetAwaiter().GetResult();
+
+                var app = configurationService.Configuration.Applications?
+                    .FirstOrDefault(app => app.Guid == args.ApplicationGuid);
+
+                if (app is null)
+                {
+                    return 2;
+                }
+
+                var applicationLaunchService = new ApplicationLaunchService(
+                    configurationService,
+                    new InjectionService());
+
+                applicationLaunchService.RunApplication(app).GetAwaiter().GetResult();
+                return 0;
+            }
+            catch
+            {
+                return 3;
+            }
         }
 
         static void ShowApp()

@@ -60,7 +60,11 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
-    <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
+    <AppxBundlePlatforms Condition="'$(AppxBundlePlatforms)' == '' and '$(Platform)' == 'x64'">x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms Condition="'$(AppxBundlePlatforms)' == '' and '$(Platform)' == 'x86'">x86</AppxBundlePlatforms>
+    <AppxBundlePlatforms Condition="'$(AppxBundlePlatforms)' == '' and '$(Platform)' == 'ARM64'">ARM64</AppxBundlePlatforms>
+    <AppxBundlePlatforms Condition="'$(AppxBundlePlatforms)' == '' and '$(Platform)' == 'ARM'">ARM</AppxBundlePlatforms>
+    <AppxBundlePlatforms Condition="'$(AppxBundlePlatforms)' == ''">neutral</AppxBundlePlatforms>
     <AppInstallerUri>https://apps.elecho.dev/apprunner</AppInstallerUri>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>

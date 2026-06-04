@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,14 +8,12 @@ using System.Windows;
 using System.Windows.Data;
 using AppRunner.Controls;
 using AppRunner.Helpers;
-using AppRunner.Injection;
 using AppRunner.Models;
 using AppRunner.Resources;
 using AppRunner.Services;
 using AppRunner.Utilities;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using EleCho.WpfSuite.Controls;
 
 namespace AppRunner.ViewModels
 {
@@ -28,7 +24,7 @@ namespace AppRunner.ViewModels
         public DictionaryProxy<string, bool> GroupExpandedValues { get; }
 
         private readonly ConfigurationService _configurationService;
-        private readonly InjectionService _injectionService;
+        private readonly ApplicationLaunchService _applicationLaunchService;
         private RunApp? _editingApplicationToPopulate;
 
         [ObservableProperty]
@@ -53,10 +49,10 @@ namespace AppRunner.ViewModels
 
         public ApplicationsPageModel(
             ConfigurationService configurationService,
-            InjectionService injectionService)
+            ApplicationLaunchService applicationLaunchService)
         {
             this._configurationService = configurationService;
-            this._injectionService = injectionService;
+            this._applicationLaunchService = applicationLaunchService;
 
             ShowGrouped = _configurationService.Configuration.ApplicationsShowGroupView;
 
@@ -84,91 +80,6 @@ namespace AppRunner.ViewModels
         private void HandleStartException(Exception ex)
         {
             MessageUtils.ShowDialogMessage(Strings.Common_Error, ex.Message);
-        }
-
-        private void ApplyEnvironmentBeforeApplicationStart(
-            EnvironmentVariableModifier environmentVariableModifier,
-            ProcessStartInfo processStartInfo,
-            RunEnvironment? env)
-        {
-            if (env is null)
-            {
-                // 默认工作目录
-                processStartInfo.WorkingDirectory = _configurationService.Configuration.DefaultWorkingDirectory switch
-                {
-                    DefaultWorkingDirectory.WorkingDirectoryOfCurrentApp => Environment.CurrentDirectory,
-                    DefaultWorkingDirectory.UserProfile => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                    _ => string.Empty
-                };
-
-                return;
-            }
-
-            var fileMapsEnvironmentVariableName = "SlimeNull.AppRunner.FileMaps";
-            var workingDirectory = Environment.ExpandEnvironmentVariables(env.WorkingDirectory);
-
-            if (!string.IsNullOrWhiteSpace(workingDirectory) && Directory.Exists(workingDirectory))
-            {
-                processStartInfo.WorkingDirectory = workingDirectory;
-            }
-            else
-            {
-                processStartInfo.WorkingDirectory = _configurationService.Configuration.DefaultWorkingDirectory switch
-                {
-                    DefaultWorkingDirectory.WorkingDirectoryOfCurrentApp => Environment.CurrentDirectory,
-                    DefaultWorkingDirectory.UserProfile => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                    _ => string.Empty
-                };
-            }
-
-            if (env.EnvironmentVariables is not null)
-            {
-                foreach (var var in env.EnvironmentVariables)
-                {
-                    if (string.IsNullOrWhiteSpace(var.Key))
-                    {
-                        continue;
-                    }
-
-                    environmentVariableModifier.Set(var.Key, var.Value);
-                }
-            }
-
-            if (env.FileMaps is not null)
-            {
-                var fileMapStrings = env.FileMaps
-                    .Where(map => !string.IsNullOrWhiteSpace(map.Key) && !string.IsNullOrWhiteSpace(map.Value))
-                    .Select(map => $"{Environment.ExpandEnvironmentVariables(map.Key!).Trim('"')}|{Environment.ExpandEnvironmentVariables(map.Value!).Trim('"')}");
-
-                var environmentVariableValue = string.Join('|', fileMapStrings);
-                environmentVariableModifier.Set(fileMapsEnvironmentVariableName, environmentVariableValue);
-            }
-            else
-            {
-                environmentVariableModifier.Set(fileMapsEnvironmentVariableName, null);
-            }
-        }
-
-        private async Task ApplyEnvironmentAfterApplicationStarted(
-            Process process,
-            RunEnvironment? env)
-        {
-            if (env is null)
-            {
-                return;
-            }
-
-            if (env.FileMaps is not null)
-            {
-                try
-                {
-                    await _injectionService.InjectFileHookerAndWaitAsync(process);
-                }
-                catch (Exception ex)
-                {
-                    MessageUtils.ShowDialogMessage(Strings.Common_Error, $"{Strings.Message_AnErrorOccurredWhilePerformingFileMappingOnTheTargetApplication}. {ex.Message}");
-                }
-            }
         }
 
         [RelayCommand]
@@ -271,51 +182,9 @@ namespace AppRunner.ViewModels
 
         public async Task RunApplication(RunApp app, RunEnvironment? environmentOverride, bool? runAsAdministratorOverride)
         {
-            if (string.IsNullOrWhiteSpace(app.FileName))
-            {
-                MessageUtils.ShowDialogMessage(Strings.Common_Error, Strings.Message_AppFileNameCanNotBeEmpty);
-                return;
-            }
-
-            var trimmedAppFileName = app.FileName.Trim('"');
-
-            ProcessStartInfo startInfo = new ProcessStartInfo()
-            {
-                FileName = Environment.ExpandEnvironmentVariables(trimmedAppFileName),
-                Arguments = Environment.ExpandEnvironmentVariables(app.CommandLineArguments),
-                CreateNoWindow = app.CreateNoWindow,
-                UseShellExecute = app.UseShellExecute,
-            };
-
-            if (runAsAdministratorOverride ?? app.RunAsAdministrator)
-            {
-                startInfo.UseShellExecute = true;
-                startInfo.Verb = "runas";
-            }
-
-            var appEnvironemnt = _configurationService.Configuration.Environments?.FirstOrDefault(env => env.Guid == app.EnvironmentGuid);
-
             try
             {
-                using var environmentVariableModifier = new EnvironmentVariableModifier();
-
-                ApplyEnvironmentBeforeApplicationStart(environmentVariableModifier, startInfo, environmentOverride ?? appEnvironemnt);
-                var process = Process.Start(startInfo);
-
-                if (process is not null)
-                {
-                    await ApplyEnvironmentAfterApplicationStarted(process, environmentOverride ?? appEnvironemnt);
-
-                    // wait for start
-                    await Task.Run(() =>
-                    {
-                        try
-                        {
-                            process.WaitForInputIdle(TimeSpan.FromSeconds(1));
-                        }
-                        catch { }
-                    });
-                }
+                await _applicationLaunchService.RunApplication(app, environmentOverride, runAsAdministratorOverride);
             }
             catch (Exception ex)
             {
