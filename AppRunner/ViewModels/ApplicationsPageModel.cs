@@ -88,9 +88,14 @@ namespace AppRunner.ViewModels
         [RelayCommand]
         public void AddNewApplication()
         {
+            AddNewApplication(new RunApp());
+        }
+
+        public void AddNewApplication(RunApp app)
+        {
             EditApplicationDialogTitle = Strings.Title_AddNewApplication;
             IsEditApplicationDialogOpen = true;
-            EditingApplication = new RunApp();
+            EditingApplication = app;
             IsCreatingNewApplication = true;
         }
 

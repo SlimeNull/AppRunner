@@ -43,6 +43,7 @@ namespace AppRunner
             serviceCollection.AddSingleton<EnvironmentDeploymentService>();
             serviceCollection.AddSingleton<ApplicationLaunchService>();
             serviceCollection.AddSingleton<ShortcutService>();
+            serviceCollection.AddSingleton<ApplicationFileImportService>();
 
 
             return serviceCollection.BuildServiceProvider();

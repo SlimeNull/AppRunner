@@ -13,8 +13,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AppRunner.Models;
+using AppRunner.Resources;
 using AppRunner.Services;
 using AppRunner.ViewModels;
+using AppRunner.Utilities;
 using CommunityToolkit.Mvvm.Input;
 
 namespace AppRunner.Views
@@ -26,13 +28,16 @@ namespace AppRunner.Views
     {
         public ConfigurationService ConfigurationService { get; }
         public ApplicationsPageModel ViewModel { get; }
+        private readonly ApplicationFileImportService _applicationFileImportService;
 
         public ApplicationsPage(
             ApplicationsPageModel viewModel,
-            ConfigurationService configurationService)
+            ConfigurationService configurationService,
+            ApplicationFileImportService applicationFileImportService)
         {
             ConfigurationService = configurationService;
             ViewModel = viewModel;
+            _applicationFileImportService = applicationFileImportService;
             DataContext = this;
 
             InitializeComponent();
@@ -85,6 +90,65 @@ namespace AppRunner.Views
 
             ConfigurationService.Configuration.TrimGroupExpandedValues();
             _ = ConfigurationService.SaveConfiguration();
+        }
+
+        private void Page_PreviewDragEnter(object sender, DragEventArgs e)
+        {
+            e.Effects = CanImportDroppedFile(e)
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+            e.Handled = true;
+        }
+
+        private void Page_PreviewDragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = CanImportDroppedFile(e)
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+            e.Handled = true;
+        }
+
+        private void Page_PreviewDrop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                var filePath = GetDroppedFilePath(e);
+                if (filePath is null)
+                {
+                    return;
+                }
+
+                ViewModel.AddNewApplication(
+                    _applicationFileImportService.CreateApplicationFromFile(filePath));
+            }
+            catch (Exception ex)
+            {
+                MessageUtils.ShowDialogMessage(Strings.Common_Error, ex.Message);
+            }
+            finally
+            {
+                e.Handled = true;
+            }
+        }
+
+        private static bool CanImportDroppedFile(DragEventArgs e)
+        {
+            return GetDroppedFilePath(e) is not null;
+        }
+
+        private static string? GetDroppedFilePath(DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                return null;
+            }
+
+            if (e.Data.GetData(DataFormats.FileDrop) is not string[] files)
+            {
+                return null;
+            }
+
+            return files.FirstOrDefault(System.IO.File.Exists);
         }
     }
 }

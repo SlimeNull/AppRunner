@@ -5,8 +5,19 @@ using System.Text;
 
 namespace AppRunner.Services
 {
+    public class ShortcutInfo
+    {
+        public string TargetPath { get; init; } = string.Empty;
+        public string Arguments { get; init; } = string.Empty;
+        public string Description { get; init; } = string.Empty;
+        public bool RunAsAdministrator { get; init; }
+    }
+
     public class ShortcutService
     {
+        private const int StringBufferSize = 32767;
+        private const uint ShellLinkDataFlagRunAsUser = 0x00002000;
+
         public void CreateShortcut(
             string shortcutPath,
             string arguments,
@@ -24,6 +35,39 @@ namespace AppRunner.Services
             }
 
             ((IPersistFile)shellLink).Save(shortcutPath, true);
+        }
+
+        public ShortcutInfo ReadShortcut(string shortcutPath)
+        {
+            var shellLink = (IShellLinkW)new ShellLink();
+            ((IPersistFile)shellLink).Load(shortcutPath, 0);
+
+            var targetPath = new StringBuilder(StringBufferSize);
+            var arguments = new StringBuilder(StringBufferSize);
+            var description = new StringBuilder(StringBufferSize);
+
+            shellLink.GetPath(targetPath, targetPath.Capacity, IntPtr.Zero, 0);
+            shellLink.GetArguments(arguments, arguments.Capacity);
+            shellLink.GetDescription(description, description.Capacity);
+
+            return new ShortcutInfo()
+            {
+                TargetPath = targetPath.ToString(),
+                Arguments = arguments.ToString(),
+                Description = description.ToString(),
+                RunAsAdministrator = IsRunAsAdministrator(shellLink),
+            };
+        }
+
+        private static bool IsRunAsAdministrator(IShellLinkW shellLink)
+        {
+            if (shellLink is not IShellLinkDataList shellLinkDataList)
+            {
+                return false;
+            }
+
+            shellLinkDataList.GetFlags(out var flags);
+            return (flags & ShellLinkDataFlagRunAsUser) != 0;
         }
 
         public static string GetSafeShortcutFileName(string name)
@@ -76,6 +120,18 @@ namespace AppRunner.Services
             void SetRelativePath([MarshalAs(UnmanagedType.LPWStr)] string pszPathRel, uint dwReserved);
             void Resolve(IntPtr hwnd, uint fFlags);
             void SetPath([MarshalAs(UnmanagedType.LPWStr)] string pszFile);
+        }
+
+        [ComImport]
+        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        [Guid("45E2B4AE-B1C3-11D0-B92F-00A0C90312E1")]
+        private interface IShellLinkDataList
+        {
+            void AddDataBlock(IntPtr pDataBlock);
+            void CopyDataBlock(uint dwSig, out IntPtr ppDataBlock);
+            void RemoveDataBlock(uint dwSig);
+            void GetFlags(out uint pdwFlags);
+            void SetFlags(uint dwFlags);
         }
 
         [ComImport]
