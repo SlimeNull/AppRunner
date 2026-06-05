@@ -15,13 +15,19 @@ namespace AppRunner.Services
 
         private readonly ConfigurationService _configurationService;
         private readonly InjectionService _injectionService;
+        private readonly ElevationService _elevationService;
+        private readonly ApplicationManifestService _applicationManifestService;
 
         public ApplicationLaunchService(
             ConfigurationService configurationService,
-            InjectionService injectionService)
+            InjectionService injectionService,
+            ElevationService elevationService,
+            ApplicationManifestService applicationManifestService)
         {
             _configurationService = configurationService;
             _injectionService = injectionService;
+            _elevationService = elevationService;
+            _applicationManifestService = applicationManifestService;
         }
 
         private void ApplyEnvironmentBeforeApplicationStart(
@@ -107,7 +113,8 @@ namespace AppRunner.Services
         public async Task RunApplication(
             RunApp app,
             RunEnvironment? environmentOverride = null,
-            bool? runAsAdministratorOverride = null)
+            bool? runAsAdministratorOverride = null,
+            bool allowSelfElevation = true)
         {
             if (string.IsNullOrWhiteSpace(app.FileName))
             {
@@ -115,6 +122,25 @@ namespace AppRunner.Services
             }
 
             var trimmedAppFileName = app.FileName.Trim('"');
+            var shouldRunAsAdministrator = runAsAdministratorOverride
+                ?? (app.RunAsAdministrator ||
+                    _applicationManifestService.RequiresAdministrator(trimmedAppFileName));
+
+            var environmentGuid = environmentOverride?.Guid;
+            var isRunningAsAdministrator = _elevationService.IsRunningAsAdministrator();
+
+            if (shouldRunAsAdministrator &&
+                allowSelfElevation &&
+                !isRunningAsAdministrator)
+            {
+                _elevationService.StartElevatedSelf(
+                    AppRunnerCommandLine.CreateRunApplicationArguments(
+                        app.Guid,
+                        environmentGuid,
+                        runAsAdministrator: true));
+                return;
+            }
+
             var startInfo = new ProcessStartInfo()
             {
                 FileName = Environment.ExpandEnvironmentVariables(trimmedAppFileName),
@@ -123,7 +149,7 @@ namespace AppRunner.Services
                 UseShellExecute = app.UseShellExecute,
             };
 
-            if (runAsAdministratorOverride ?? app.RunAsAdministrator)
+            if (shouldRunAsAdministrator && !isRunningAsAdministrator)
             {
                 startInfo.UseShellExecute = true;
                 startInfo.Verb = "runas";

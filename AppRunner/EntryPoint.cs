@@ -84,7 +84,10 @@ namespace AppRunner
                     return 2;
                 }
 
-                new EnvironmentDeploymentService().DeployEnvironment(environment);
+                new EnvironmentDeploymentService(
+                    new MachineEnvironmentService(),
+                    new ElevationService())
+                    .DeployEnvironment(environment);
                 return 0;
             }
             catch
@@ -108,11 +111,29 @@ namespace AppRunner
                     return 2;
                 }
 
+                var environment = args.EnvironmentGuid is null
+                    ? null
+                    : configurationService.Configuration.Environments?
+                        .FirstOrDefault(env => env.Guid == args.EnvironmentGuid.Value);
+
+                if (args.EnvironmentGuid is not null && environment is null)
+                {
+                    return 2;
+                }
+
                 var applicationLaunchService = new ApplicationLaunchService(
                     configurationService,
-                    new InjectionService());
+                    new InjectionService(),
+                    new ElevationService(),
+                    new ApplicationManifestService());
 
-                applicationLaunchService.RunApplication(app).GetAwaiter().GetResult();
+                applicationLaunchService
+                    .RunApplication(
+                        app,
+                        environment,
+                        args.RunAsAdministrator ? true : null)
+                    .GetAwaiter()
+                    .GetResult();
                 return 0;
             }
             catch

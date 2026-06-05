@@ -6,8 +6,27 @@ namespace AppRunner.Services
 {
     public class EnvironmentDeploymentService
     {
-        public void DeployEnvironment(RunEnvironment env)
+        private readonly MachineEnvironmentService _machineEnvironmentService;
+        private readonly ElevationService _elevationService;
+
+        public EnvironmentDeploymentService(
+            MachineEnvironmentService machineEnvironmentService,
+            ElevationService elevationService)
         {
+            _machineEnvironmentService = machineEnvironmentService;
+            _elevationService = elevationService;
+        }
+
+        public void DeployEnvironment(RunEnvironment env, bool allowSelfElevation = true)
+        {
+            if (allowSelfElevation &&
+                !_elevationService.IsRunningAsAdministrator())
+            {
+                _elevationService.StartElevatedSelf(
+                    AppRunnerCommandLine.CreateDeployEnvironmentArguments(env.Guid));
+                return;
+            }
+
             if (Directory.Exists(env.WorkingDirectory))
             {
                 Environment.CurrentDirectory = env.WorkingDirectory;
@@ -15,15 +34,7 @@ namespace AppRunner.Services
 
             if (env.EnvironmentVariables is not null)
             {
-                foreach (var var in env.EnvironmentVariables)
-                {
-                    if (string.IsNullOrWhiteSpace(var.Key))
-                    {
-                        continue;
-                    }
-
-                    Environment.SetEnvironmentVariable(var.Key, var.Value, EnvironmentVariableTarget.Machine);
-                }
+                _machineEnvironmentService.SetVariables(env.EnvironmentVariables);
             }
 
             if (env.FileMaps is not null)

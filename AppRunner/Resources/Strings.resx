@@ -318,4 +318,13 @@
   <data name="Menu.Deploy" xml:space="preserve">
     <value>Deploy</value>
   </data>
+  <data name="Menu.CreateShortcut" xml:space="preserve">
+    <value>Create shortcut</value>
+  </data>
+  <data name="Menu.CreateAdministratorShortcut" xml:space="preserve">
+    <value>Create administrator shortcut</value>
+  </data>
+  <data name="Menu.CreateShortcutWithEnvironment" xml:space="preserve">
+    <value>Create shortcut with</value>
+  </data>
 </root>

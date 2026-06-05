@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -26,6 +24,7 @@ namespace AppRunner.ViewModels
 
         private readonly ConfigurationService _configurationService;
         private readonly EnvironmentDeploymentService _environmentDeploymentService;
+        private readonly ShortcutService _shortcutService;
         private RunEnvironment? _editingEnvironmentToPopulate;
 
         [ObservableProperty]
@@ -47,10 +46,12 @@ namespace AppRunner.ViewModels
 
         public EnvironmentsPageModel(
             ConfigurationService configurationService,
-            EnvironmentDeploymentService environmentDeploymentService)
+            EnvironmentDeploymentService environmentDeploymentService,
+            ShortcutService shortcutService)
         {
             this._configurationService = configurationService;
             this._environmentDeploymentService = environmentDeploymentService;
+            this._shortcutService = shortcutService;
 
             ShowGrouped = _configurationService.Configuration.EnvironmentsShowGroupView;
 
@@ -92,38 +93,53 @@ namespace AppRunner.ViewModels
                 return;
             }
 
-            if (!IsRunningAsAdministrator())
-            {
-                StartElevatedDeployEnvironment(env);
-                return;
-            }
-
-            _environmentDeploymentService.DeployEnvironment(env);
-        }
-
-        private static bool IsRunningAsAdministrator()
-        {
-            using var identity = WindowsIdentity.GetCurrent();
-            var principal = new WindowsPrincipal(identity);
-            return principal.IsInRole(WindowsBuiltInRole.Administrator);
-        }
-
-        private static void StartElevatedDeployEnvironment(RunEnvironment env)
-        {
             try
             {
-                Process.Start(new ProcessStartInfo()
-                {
-                    FileName = "apprunner.exe",
-                    Arguments = $"deploy \"{env.Guid}\"",
-                    UseShellExecute = true,
-                    Verb = "runas",
-                });
+                _environmentDeploymentService.DeployEnvironment(env);
             }
             catch (Exception ex)
             {
                 MessageUtils.ShowDialogMessage(Strings.Common_Error, ex.Message);
             }
+        }
+
+        [RelayCommand]
+        public void CreateDeployEnvironmentShortcut(RunEnvironment env)
+        {
+            var shortcutPath = SelectShortcutPath(env.Name);
+            if (shortcutPath is null)
+            {
+                return;
+            }
+
+            try
+            {
+                _shortcutService.CreateShortcut(
+                    shortcutPath,
+                    AppRunnerCommandLine.CreateDeployEnvironmentArguments(env.Guid),
+                    env.Name);
+            }
+            catch (Exception ex)
+            {
+                MessageUtils.ShowDialogMessage(Strings.Common_Error, ex.Message);
+            }
+        }
+
+        private static string? SelectShortcutPath(string name)
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog()
+            {
+                AddExtension = true,
+                DefaultExt = ".lnk",
+                FileName = ShortcutService.GetSafeShortcutFileName(name) + ".lnk",
+                Filter = "Shortcut (*.lnk)|*.lnk",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
+                OverwritePrompt = true,
+            };
+
+            return dialog.ShowDialog() == true
+                ? dialog.FileName
+                : null;
         }
 
         [RelayCommand]

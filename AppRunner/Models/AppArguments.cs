@@ -26,5 +26,11 @@ namespace AppRunner.Models
     {
         [Value(0, Required = true)]
         public Guid ApplicationGuid { get; set; }
+
+        [Option('e', "environment")]
+        public Guid? EnvironmentGuid { get; set; }
+
+        [Option('a', "administrator")]
+        public bool RunAsAdministrator { get; set; }
     }
 }

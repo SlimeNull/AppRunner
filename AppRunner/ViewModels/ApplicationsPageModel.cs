@@ -25,6 +25,7 @@ namespace AppRunner.ViewModels
 
         private readonly ConfigurationService _configurationService;
         private readonly ApplicationLaunchService _applicationLaunchService;
+        private readonly ShortcutService _shortcutService;
         private RunApp? _editingApplicationToPopulate;
 
         [ObservableProperty]
@@ -49,10 +50,12 @@ namespace AppRunner.ViewModels
 
         public ApplicationsPageModel(
             ConfigurationService configurationService,
-            ApplicationLaunchService applicationLaunchService)
+            ApplicationLaunchService applicationLaunchService,
+            ShortcutService shortcutService)
         {
             this._configurationService = configurationService;
             this._applicationLaunchService = applicationLaunchService;
+            this._shortcutService = shortcutService;
 
             ShowGrouped = _configurationService.Configuration.ApplicationsShowGroupView;
 
@@ -219,6 +222,76 @@ namespace AppRunner.ViewModels
         public Task RunApplicationAsAdministrator(RunApp app)
         {
             return RunApplication(app, null, true);
+        }
+
+        [RelayCommand]
+        public void CreateRunApplicationShortcut(RunApp app)
+        {
+            CreateRunApplicationShortcut(app, null, false);
+        }
+
+        [RelayCommand]
+        public void CreateRunApplicationAsAdministratorShortcut(RunApp app)
+        {
+            CreateRunApplicationShortcut(app, null, true);
+        }
+
+        [RelayCommand]
+        public void CreateRunApplicationWithEnvironmentShortcut(RunAppAndEnvironmentGuid appAndEnvironment)
+        {
+            if (appAndEnvironment.App is null)
+            {
+                return;
+            }
+
+            CreateRunApplicationShortcut(
+                appAndEnvironment.App,
+                appAndEnvironment.EnvironmentGuid,
+                false);
+        }
+
+        private void CreateRunApplicationShortcut(
+            RunApp app,
+            Guid? environmentGuid,
+            bool runAsAdministrator)
+        {
+            var shortcutPath = SelectShortcutPath(app.Name);
+            if (shortcutPath is null)
+            {
+                return;
+            }
+
+            try
+            {
+                _shortcutService.CreateShortcut(
+                    shortcutPath,
+                    AppRunnerCommandLine.CreateRunApplicationArguments(
+                        app.Guid,
+                        environmentGuid,
+                        runAsAdministrator),
+                    app.Name);
+            }
+            catch (Exception ex)
+            {
+                MessageUtils.ShowDialogMessage(Strings.Common_Error, ex.Message);
+            }
+        }
+
+        private static string? SelectShortcutPath(string name)
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog()
+            {
+                AddExtension = true,
+                DefaultExt = ".lnk",
+                FileName = ShortcutService.GetSafeShortcutFileName(name) + ".lnk",
+                Filter = "Shortcut (*.lnk)|*.lnk",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
+                OverwritePrompt = true,
+            };
+
+            return dialog.ShowDialog() == true
+                ? dialog.FileName
+                : null;
         }
 
         [RelayCommand]

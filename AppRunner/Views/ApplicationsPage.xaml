@@ -142,6 +142,14 @@
                                                                  Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationAsAdministratorCommand}"
                                                                  CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"
                                                                  FontFamily="{StaticResource FontDingDing}"/>
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.CreateShortcut}"
+                                                                 Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.CreateRunApplicationShortcutCommand}"
+                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"
+                                                                 FontFamily="{StaticResource FontDingDing}"/>
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.CreateAdministratorShortcut}"
+                                                                 Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.CreateRunApplicationAsAdministratorShortcutCommand}"
+                                                                 CommandParameter="{Binding Source={StaticResource DataProxy},Path=Data}"
+                                                                 FontFamily="{StaticResource FontDingDing}"/>
                                                     <ws:MenuItem Header="{mk:LocalString Menu.RunWithEnvironment}"
                                                                  FontFamily="{StaticResource FontDingDing}"
                                                                  ItemsSource="{Binding Source={StaticResource ConfigurationProxy},Path=Data.Environments}">
@@ -150,6 +158,30 @@
                                                                    BasedOn="{StaticResource {x:Type ws:MenuItem}}">
                                                                 <Setter Property="FontFamily" Value="{StaticResource FontDingDing}"/>
                                                                 <Setter Property="Command" Value="{Binding Source={StaticResource ViewModelProxy},Path=Data.RunApplicationWithEnvironmentCommand}"/>
+                                                                <Setter Property="CommandParameter">
+                                                                    <Setter.Value>
+                                                                        <MultiBinding Converter="{x:Static cvt:RunAppAndEnvironmentToAppAndEnvironmentGuidConverter.Instance}">
+                                                                            <Binding Source="{StaticResource DataProxy}" Path="Data"/>
+                                                                            <Binding/>
+                                                                        </MultiBinding>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </Style>
+                                                        </ws:MenuItem.ItemContainerStyle>
+                                                        <ws:MenuItem.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding Name}"/>
+                                                            </DataTemplate>
+                                                        </ws:MenuItem.ItemTemplate>
+                                                    </ws:MenuItem>
+                                                    <ws:MenuItem Header="{mk:LocalString Menu.CreateShortcutWithEnvironment}"
+                                                                 FontFamily="{StaticResource FontDingDing}"
+                                                                 ItemsSource="{Binding Source={StaticResource ConfigurationProxy},Path=Data.Environments}">
+                                                        <ws:MenuItem.ItemContainerStyle>
+                                                            <Style TargetType="ws:MenuItem"
+                                                                   BasedOn="{StaticResource {x:Type ws:MenuItem}}">
+                                                                <Setter Property="FontFamily" Value="{StaticResource FontDingDing}"/>
+                                                                <Setter Property="Command" Value="{Binding Source={StaticResource ViewModelProxy},Path=Data.CreateRunApplicationWithEnvironmentShortcutCommand}"/>
                                                                 <Setter Property="CommandParameter">
                                                                     <Setter.Value>
                                                                         <MultiBinding Converter="{x:Static cvt:RunAppAndEnvironmentToAppAndEnvironmentGuidConverter.Instance}">

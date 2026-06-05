@@ -37,8 +37,12 @@ namespace AppRunner
 
             serviceCollection.AddSingleton<ConfigurationService>();
             serviceCollection.AddSingleton<InjectionService>();
+            serviceCollection.AddSingleton<ElevationService>();
+            serviceCollection.AddSingleton<ApplicationManifestService>();
+            serviceCollection.AddSingleton<MachineEnvironmentService>();
             serviceCollection.AddSingleton<EnvironmentDeploymentService>();
             serviceCollection.AddSingleton<ApplicationLaunchService>();
+            serviceCollection.AddSingleton<ShortcutService>();
 
 
             return serviceCollection.BuildServiceProvider();

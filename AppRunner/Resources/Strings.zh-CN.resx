@@ -315,4 +315,13 @@
   <data name="Menu.Deploy" xml:space="preserve">
     <value>部署</value>
   </data>
+  <data name="Menu.CreateShortcut" xml:space="preserve">
+    <value>创建快捷方式</value>
+  </data>
+  <data name="Menu.CreateAdministratorShortcut" xml:space="preserve">
+    <value>创建管理员快捷方式</value>
+  </data>
+  <data name="Menu.CreateShortcutWithEnvironment" xml:space="preserve">
+    <value>创建指定环境快捷方式</value>
+  </data>
 </root>
