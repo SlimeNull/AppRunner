@@ -324,4 +324,7 @@
   <data name="Menu.CreateShortcutWithEnvironment" xml:space="preserve">
     <value>创建指定环境快捷方式</value>
   </data>
+  <data name="Message.HowToUseEnvironment" xml:space="preserve">
+    <value>若要使用此环境, 你可以在已有应用的编辑页面中选择此环境, 或右击此环境单击部署以将其应用到全局</value>
+  </data>
 </root>

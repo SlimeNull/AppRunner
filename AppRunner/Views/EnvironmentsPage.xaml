@@ -99,6 +99,8 @@
                                                    PressedBackground="#f0f0f0"
                                                    HorizontalContentAlignment="Stretch"
                                                    VerticalContentAlignment="Stretch"
+                                                   Command="{Binding Source={StaticResource ViewModelProxy},Path=Data.ShowEnvironmentUsageHintCommand}"
+                                                   CommandParameter="{Binding}"
                                                    CornerRadius="8"
                                                    Height="65"
                                                    Padding="8">

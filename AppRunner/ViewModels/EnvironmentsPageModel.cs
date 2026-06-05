@@ -86,6 +86,14 @@ namespace AppRunner.ViewModels
         }
 
         [RelayCommand]
+        public void ShowEnvironmentUsageHint(RunEnvironment env)
+        {
+            MessageUtils.ShowDialogMessage(
+                env.Name,
+                Strings.ResourceManager.GetString("Message.HowToUseEnvironment") ?? string.Empty);
+        }
+
+        [RelayCommand]
         public void DeployEnvironment(RunEnvironment env)
         {
             if (env is null)

@@ -327,4 +327,7 @@
   <data name="Menu.CreateShortcutWithEnvironment" xml:space="preserve">
     <value>Create shortcut with</value>
   </data>
+  <data name="Message.HowToUseEnvironment" xml:space="preserve">
+    <value>To use this environment, select it in an existing application's edit page, or right-click this environment and click Deploy to apply it globally.</value>
+  </data>
 </root>
