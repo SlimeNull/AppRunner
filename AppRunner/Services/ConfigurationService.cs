@@ -6,28 +6,21 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AppRunner.Models;
-using Windows.Storage;
 
 namespace AppRunner.Services
 {
     public class ConfigurationService
     {
+        private const string FileName = "AppConfiguration.json";
         private AppConfiguration? _loadedConfiguration;
-        private StorageFolder _localStorageFolder;
+        private readonly string _configurationPath = Path.Combine(AppContext.BaseDirectory, "data", FileName);
 
-        public string ConfigurationFileName => "AppConfiguration.json";
+        public string ConfigurationFileName => FileName;
         public AppConfiguration Configuration => _loadedConfiguration ?? throw new InvalidOperationException("Configuration not loaded");
-
-        public ConfigurationService()
-        {
-            _localStorageFolder = ApplicationData.Current.LocalFolder;
-        }
 
         public async Task LoadConfiguration()
         {
-            var fileItem = await _localStorageFolder.TryGetItemAsync(ConfigurationFileName);
-
-            if (fileItem is not StorageFile file)
+            if (!File.Exists(_configurationPath))
             {
                 _loadedConfiguration = new AppConfiguration();
                 return;
@@ -35,9 +28,7 @@ namespace AppRunner.Services
 
             try
             {
-                using var fileStream = await file.OpenReadAsync();
-                using var fileStreamReader = new StreamReader(fileStream.AsStreamForRead());
-                var configurationText = await fileStreamReader.ReadToEndAsync();
+                var configurationText = await File.ReadAllTextAsync(_configurationPath);
                 var configuration = JsonSerializer.Deserialize<AppConfiguration>(configurationText);
 
                 _loadedConfiguration = configuration ?? new();
@@ -51,11 +42,8 @@ namespace AppRunner.Services
         public async Task SaveConfiguration()
         {
             var configurationText = JsonSerializer.Serialize(Configuration);
-            var file = await _localStorageFolder.CreateFileAsync(ConfigurationFileName, CreationCollisionOption.ReplaceExisting);
-            using var fileStream = await file.OpenStreamForWriteAsync();
-            using var fileStreamWriter = new StreamWriter(fileStream);
-
-            await fileStreamWriter.WriteAsync(configurationText);
+            Directory.CreateDirectory(Path.GetDirectoryName(_configurationPath)!);
+            await File.WriteAllTextAsync(_configurationPath, configurationText);
         }
 
         public async Task ExportTo(string path)

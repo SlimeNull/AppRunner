@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Version>1.0.9</Version>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
@@ -11,8 +12,9 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(RuntimeIdentifier)' == '' and ('$(Platform)' == '' or '$(Platform)' == 'AnyCPU' or '$(Platform)' == 'Any CPU')">
-    <RuntimeIdentifier>any</RuntimeIdentifier>
+  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true'">
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Platform)' == 'x64' and '$(RuntimeIdentifier)' == ''">
@@ -38,7 +40,6 @@
 
   <ItemGroup>
     <Resource Include="Assets\**" />
-    <EmbeddedResource Include="Hookers\**" />
   </ItemGroup>
   
   <ItemGroup>
@@ -71,10 +72,14 @@
 
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="BuildHookers" BeforeTargets="CoreCompile" Condition="'$(DesignTimeBuild)' != 'true'">
-    <MSBuild Projects="..\AppRunner.FileHooker\AppRunner.FileHooker.vcxproj" Properties="Platform=x86" />
-    <MSBuild Projects="..\AppRunner.FileHooker\AppRunner.FileHooker.vcxproj" Properties="Platform=x64" />
-    <Copy SourceFiles="..\x64\$(Configuration)\AppRunner.FileHooker.dll" DestinationFiles="Hookers\AppRunner.FileHooker.x64.dll" />
-    <Copy SourceFiles="..\x86\$(Configuration)\AppRunner.FileHooker.dll" DestinationFiles="Hookers\AppRunner.FileHooker.x86.dll" />
+  <Target Name="BuildHookers" BeforeTargets="AssignTargetPaths" Condition="'$(DesignTimeBuild)' != 'true'">
+    <MSBuild Projects="..\AppRunner.FileHooker\AppRunner.FileHooker.vcxproj" Properties="Platform=x86;OutDir=$(MSBuildProjectDirectory)\Hookers\build\x86\$(Configuration)\" />
+    <MSBuild Projects="..\AppRunner.FileHooker\AppRunner.FileHooker.vcxproj" Properties="Platform=x64;OutDir=$(MSBuildProjectDirectory)\Hookers\build\x64\$(Configuration)\" />
+    <Copy SourceFiles="Hookers\build\x64\$(Configuration)\AppRunner.FileHooker.dll" DestinationFiles="Hookers\AppRunner.FileHooker.x64.dll" />
+    <Copy SourceFiles="Hookers\build\x86\$(Configuration)\AppRunner.FileHooker.dll" DestinationFiles="Hookers\AppRunner.FileHooker.x86.dll" />
+    <ItemGroup>
+      <EmbeddedResource Include="Hookers\AppRunner.FileHooker.x64.dll" LogicalName="AppRunner.Hookers.AppRunner.FileHooker.x64.dll" />
+      <EmbeddedResource Include="Hookers\AppRunner.FileHooker.x86.dll" LogicalName="AppRunner.Hookers.AppRunner.FileHooker.x86.dll" />
+    </ItemGroup>
   </Target>
 </Project>

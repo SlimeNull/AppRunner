@@ -5,8 +5,6 @@ namespace AppRunner.Services
 {
     public static class AppRunnerCommandLine
     {
-        public const string AppExecutionAlias = "apprunner.exe";
-
         public static string CreateDeployEnvironmentArguments(Guid environmentGuid)
         {
             return $"deploy {Quote(environmentGuid.ToString())}";
@@ -32,17 +30,9 @@ namespace AppRunner.Services
             return arguments;
         }
 
-        public static string GetAppExecutionAliasPath()
+        public static string GetExecutablePath()
         {
-            var aliasPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Microsoft",
-                "WindowsApps",
-                AppExecutionAlias);
-
-            return File.Exists(aliasPath)
-                ? aliasPath
-                : AppExecutionAlias;
+            return Environment.ProcessPath ?? Path.Combine(AppContext.BaseDirectory, "AppRunner.exe");
         }
 
         public static string Quote(string value)

@@ -163,9 +163,7 @@ namespace AppRunner
         /// <returns>当前程序是否是单例, 如果 false, 那么应该立即中止程序</returns>
         static bool EnsureAppSingletion()
         {
-            var packageName = Windows.ApplicationModel.Package.Current.Id.FamilyName;
-
-            EventWaitHandle singletonEvent = new EventWaitHandle(false, EventResetMode.AutoReset, packageName, out bool createdNew);
+            EventWaitHandle singletonEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Local\\SlimeNull.AppRunner", out bool createdNew);
 
             if (createdNew)
             {

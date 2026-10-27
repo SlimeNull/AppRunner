@@ -24,10 +24,10 @@ namespace AppRunner.Services
             string description)
         {
             var shellLink = (IShellLinkW)new ShellLink();
-            shellLink.SetPath(AppRunnerCommandLine.GetAppExecutionAliasPath());
+            shellLink.SetPath(AppRunnerCommandLine.GetExecutablePath());
             shellLink.SetArguments(arguments);
             shellLink.SetDescription(description);
-            shellLink.SetIconLocation(AppRunnerCommandLine.GetAppExecutionAliasPath(), 0);
+            shellLink.SetIconLocation(AppRunnerCommandLine.GetExecutablePath(), 0);
 
             if (Path.GetDirectoryName(shortcutPath) is string workingDirectory)
             {

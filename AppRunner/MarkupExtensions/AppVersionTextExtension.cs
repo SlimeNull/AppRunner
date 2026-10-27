@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Markup;
-using Windows.ApplicationModel;
 
 namespace AppRunner.MarkupExtensions
 {
@@ -13,8 +12,8 @@ namespace AppRunner.MarkupExtensions
     {
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            var v = Package.Current.Id.Version;
-            return $"{v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
+            var v = typeof(AppVersionTextExtension).Assembly.GetName().Version;
+            return v?.ToString() ?? "1.0.0.0";
         }
     }
 }

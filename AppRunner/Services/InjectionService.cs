@@ -4,67 +4,75 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AppRunner.Injection;
-using Windows.ApplicationModel;
-using Windows.Storage;
 
 namespace AppRunner.Services
 {
     public class InjectionService
     {
-        private Assembly _currentAssembly;
-        private StorageFolder _localStorageFolder;
+        private readonly Assembly _currentAssembly;
+        private readonly string _hookerDirectory = Path.Combine(AppContext.BaseDirectory, "data", "Hookers");
 
         public InjectionService()
         {
             _currentAssembly = Assembly.GetExecutingAssembly();
-            _localStorageFolder = ApplicationData.Current.LocalFolder;
         }
 
-        private async Task<StorageFile?> EnsureLocalFileHooker(string architecture)
+        private async Task<string?> EnsureLocalFileHooker(string architecture)
         {
             var fileHookerFileName = $"AppRunner.FileHooker.{architecture}.dll";
             var fileHookerResourceName = $"AppRunner.Hookers.{fileHookerFileName}";
 
-            var existedItem = await _localStorageFolder.TryGetItemAsync(fileHookerFileName);
-            if (existedItem is StorageFile existedFile)
-            {
-                var basicProperties = await existedFile.GetBasicPropertiesAsync();
-                var dateModified = basicProperties.DateModified;
-                if (dateModified > Package.Current.InstalledDate)
-                {
-                    return existedFile;
-                }
-
-                await existedFile.DeleteAsync();
-            }
-
-            var fileHookerBinaryStream = _currentAssembly.GetManifestResourceStream(fileHookerResourceName);
+            using var fileHookerBinaryStream = _currentAssembly.GetManifestResourceStream(fileHookerResourceName);
             if (fileHookerBinaryStream is null)
             {
                 return null;
             }
 
-            var newFile = await _localStorageFolder.CreateFileAsync(fileHookerFileName, CreationCollisionOption.ReplaceExisting);
-            using var newFileStream = await newFile.OpenStreamForWriteAsync();
-            await fileHookerBinaryStream.CopyToAsync(newFileStream);
+            Directory.CreateDirectory(_hookerDirectory);
+            var resourceHash = await SHA256.HashDataAsync(fileHookerBinaryStream);
+            var hashSuffix = Convert.ToHexString(resourceHash)[..16];
+            var fileHookerPath = Path.Combine(_hookerDirectory, $"AppRunner.FileHooker.{architecture}.{hashSuffix}.dll");
+            if (File.Exists(fileHookerPath))
+            {
+                await using var existingFile = File.OpenRead(fileHookerPath);
+                var existingHash = await SHA256.HashDataAsync(existingFile);
+                if (CryptographicOperations.FixedTimeEquals(resourceHash, existingHash))
+                {
+                    return fileHookerPath;
+                }
+            }
 
-            return newFile;
+            fileHookerBinaryStream.Position = 0;
+            var temporaryPath = Path.Combine(_hookerDirectory, $"{Guid.NewGuid():N}.tmp");
+            try
+            {
+                await using (var temporaryFile = File.Create(temporaryPath))
+                {
+                    await fileHookerBinaryStream.CopyToAsync(temporaryFile);
+                }
+                File.Move(temporaryPath, fileHookerPath, true);
+            }
+            finally
+            {
+                if (File.Exists(temporaryPath)) File.Delete(temporaryPath);
+            }
+
+            return fileHookerPath;
         }
 
         public async Task<bool> InjectFileHookerAndWaitAsync(Process process)
         {
             var processInfo = new ProcessInfo(process);
 
-            if (await EnsureLocalFileHooker(processInfo.Architecture) is not StorageFile fileHooker)
+            if (await EnsureLocalFileHooker(processInfo.Architecture) is not string fileHookerFullPath)
             {
                 return false;
             }
-
-            string fileHookerFullPath = Path.Combine(fileHooker.Path);
 
             if (!File.Exists(fileHookerFullPath))
             {

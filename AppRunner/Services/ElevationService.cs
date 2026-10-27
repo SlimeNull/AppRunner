@@ -17,7 +17,7 @@ namespace AppRunner.Services
         {
             Process.Start(new ProcessStartInfo()
             {
-                FileName = AppRunnerCommandLine.GetAppExecutionAliasPath(),
+                FileName = AppRunnerCommandLine.GetExecutablePath(),
                 Arguments = arguments,
                 UseShellExecute = true,
                 Verb = "runas",

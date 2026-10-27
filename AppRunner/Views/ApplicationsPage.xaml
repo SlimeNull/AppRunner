@@ -40,7 +40,7 @@
     </Page.Resources>
 
     <Grid>
-        <ws:ScrollViewer>
+        <ws:ScrollViewer >
             <Grid Margin="14">
                 <ws:ConditionalControl Condition="{Binding ViewModel.Applications.Count,Converter={StaticResource NumberNotZeroConverter}}"
                                        d:Condition="{ws:Boolean True}">
